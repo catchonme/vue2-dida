@@ -8,6 +8,15 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import '../src/style/css.css'
 import '../src/style/icon.css'
+import './config/rem'
+import FaskClick from 'fastclick'
+
+if ('addEventListener' in document) {
+  document.addEventListener('DOMContentLoaded', function(){
+    FastClick.attach(document.body);
+  }, false);
+}
+
 Vue.use(MuseUI)
 
 /* eslint-disable no-new */
