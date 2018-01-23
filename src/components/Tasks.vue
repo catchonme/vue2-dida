@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <div class="left-container">
-
-    </div>
+  <div class="container">
     <div class="main-container">
       <section>
         <mu-appbar :title="taskTitle">
-          <mu-icon-button icon="menu" slot="left"/>
+          <mu-icon-button icon="menu" slot="left" @click="openLeftBar(true)"/>
+          <mu-drawer :open="showLeftBar" :docked="docked" @close="openLeftBar()" class="left-bar">
+            <mu-list @itemClick="docked ? '' : openLeftBar()">
+              <mu-list-item for="fold in folders" title="fold.name" />
+            </mu-list>
+          </mu-drawer>
           <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>
           <mu-bottom-sheet :open="bottomSheet" @close="closeBottomSheet">
             <mu-list @itemClick="chooseItem">
@@ -63,12 +65,6 @@
 <script>
 import Todo from './Todo'
 
-const filters = {
-  all:todos => todos,
-  active:todos => todos.filter(todo => !todo.done),
-  completed:todos => todos.filter(todo => todo.done)
-}
-
 export default {
   components: { Todo },
   name: 'Tasks',
@@ -81,12 +77,15 @@ export default {
       dialogShow:false,
       showCompleted:false,
       showSortSheet:false,
+      showLeftBar:false,
+      docked: false,
       todoText:'',
-      visibility:'all',
-      filters:filters
     }
   },
   computed: {
+    folders() {
+      return this.$store.state.folders
+    },
     todos() {
       return this.$store.state.todos
     },
@@ -98,6 +97,10 @@ export default {
     }
   },
   methods: {
+    openLeftBar(flag) {
+      this.showLeftBar = !this.showLeftBar;
+      this.docked = !flag
+    },
     closeBottomSheet () {
       this.bottomSheet = false
     },
@@ -164,6 +167,9 @@ export default {
 </script>
 
 <style scoped>
+  .left-bar {
+    background: #FFCCCC;
+  }
   .main {
     position: relative;
   }
