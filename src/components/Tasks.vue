@@ -64,6 +64,7 @@
 
 <script>
 import Todo from './Todo'
+import { mapGetters } from 'vuex'
 
 export default {
   components: { Todo },
@@ -82,13 +83,21 @@ export default {
       todoText:'',
     }
   },
+  created(){
+    this.$store.dispatch('getAllFolders');
+  },
   computed: {
+    ...mapGetters([
+      'todos'
+      ]
+    ),
     folders() {
       return this.$store.state.folders
     },
-    todos() {
-      return this.$store.state.todos
-    },
+    /*todos() {
+      var folder = this.folders.filter(folder => folder.name === 'default');
+      return folder[0].todos;
+    },*/
     filteredTodos () {
       return this.todos.filter(todo => !todo.done)
     },
@@ -154,11 +163,12 @@ export default {
     },
     addTodo() {
       var text = this.todoText.replace(/^\s+|\s+$/, " ");
+      var name = 'default';
       if (text) {
-        this.$store.commit('addTodo', { text })
+        this.$store.commit('addTodo', { name, text })
       }
       this.todoText = '';
-      console.log(this.$store.state.todos)
+      // console.log(this.$store.state.folders.todos)
       this.addButtonShow = true;
       this.dialogShow = false
     }

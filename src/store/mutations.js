@@ -1,8 +1,39 @@
-export const STORAGE_KEY = 'dida'
+import {getStore, setStore, removeStore} from '../config/utils'
+
+export const STORAGE_KEY = 'tasks';
+
+const defaultStorage = [{name:'default', todos : [{text:'test',done:false}]}]
 
 export const state = {
-  todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
+  // folders: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
+  // folders: [{name:'default', todos : []}]
+  folders:[]
 }
+
+export const actions = {
+  getAllFolders ({commit}) {
+    removeStore(STORAGE_KEY);
+    var folders = getStore(STORAGE_KEY);
+    if (!folders) {
+      setStore(STORAGE_KEY, defaultStorage);
+      // commit('setStorage', { defaultStorage });
+      folders = getStore(STORAGE_KEY);
+      commit('getAllFolders', { folders });
+    } else {
+      commit('getAllFolders', { folders });
+    }
+  }
+}
+
+
+export const getters = {
+  todos: function () {
+    let folder = state.folders.filter(val => val.name === 'default');
+    let todos = folder[0].todos;
+    return todos;
+  }
+}
+
 
 export const mutations = {
   /*addTodo (state, { text, priority, folder, date }) {
@@ -15,11 +46,20 @@ export const mutations = {
     })
   },*/
 
-  addTodo (state, { text }) {
-    state.todos.push({
-      text,
-      done:false
-    })
+  getAllFolders (state, { folders }) {
+    state.folders = folders;
+  },
+
+  addTodo (state, { name, text }) {
+    var tasks = getStore(STORAGE_KEY);
+    var folder = tasks.find(task => task.name === name);
+    if (!folder) {
+      tasks[tasks.length].name = name;
+      tasks[tasks.length].todos = [{text:text, done:false}];
+    } else {
+      folder.todos.push({text:text, done:false});
+    }
+    setStore(STORAGE_KEY, tasks);
   },
 
   deleteTodo( state, { todo } ) {
