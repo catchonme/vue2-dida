@@ -6,7 +6,8 @@
           <mu-icon-button icon="menu" slot="left" @click="openLeftBar(true)"/>
           <mu-drawer :open="showLeftBar" :docked="docked" @close="openLeftBar()" class="left-bar">
             <mu-list @itemClick="docked ? '' : openLeftBar()">
-              <mu-list-item for="fold in folders" title="fold.name" />
+              <li v-for="name in folderNames">{{ name }}</li>
+              <mu-list-item for="folder in folderNames" title="folder"/>
             </mu-list>
           </mu-drawer>
           <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>
@@ -88,7 +89,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'todos'
+      'todos',
+      'folderNames'
       ]
     ),
     folders() {

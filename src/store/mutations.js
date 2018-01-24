@@ -7,7 +7,8 @@ const defaultStorage = [{name:'default', todos : [{text:'test',done:false}]}]
 export const state = {
   // folders: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
   // folders: [{name:'default', todos : []}]
-  folders:[]
+  folders:[],
+  todos:[]
 }
 
 export const actions = {
@@ -31,6 +32,13 @@ export const getters = {
     let folder = state.folders.filter(val => val.name === 'default');
     let todos = folder[0].todos;
     return todos;
+  },
+  folderNames:function(){
+    let folderNames = [];
+    state.folders.map(function (val) {
+      folderNames.push(val.name);
+    });
+    return folderNames;
   }
 }
 
@@ -48,18 +56,22 @@ export const mutations = {
 
   getAllFolders (state, { folders }) {
     state.folders = folders;
+    let folder = state.folders.filter(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
+    let todos = folder[0].todos;
+    state.todos = todos;//当前文件夹下的todos
   },
 
+  // name 是文件夹的名称
   addTodo (state, { name, text }) {
     var tasks = getStore(STORAGE_KEY);
-    var folder = tasks.find(task => task.name === name);
+    var folder = state.folders.find(folder => folder.name === name);
+    console.log(folder);
     if (!folder) {
       tasks[tasks.length].name = name;
       tasks[tasks.length].todos = [{text:text, done:false}];
     } else {
       folder.todos.push({text:text, done:false});
     }
-    setStore(STORAGE_KEY, tasks);
   },
 
   deleteTodo( state, { todo } ) {
