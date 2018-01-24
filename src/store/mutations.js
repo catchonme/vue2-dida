@@ -2,7 +2,10 @@ import {getStore, setStore, removeStore} from '../config/utils'
 
 export const STORAGE_KEY = 'tasks';
 
-const defaultStorage = [{name:'default', todos : [{text:'开始你的任务',done:false}]}]
+const defaultStorage = [
+  {name:'default', todos : [{text:'开始你的任务',done:false}]},
+  {name:'今天', todos : [{text:'开始你的任务',done:false}]},
+  ]
 
 export const state = {
   folders:[],
@@ -26,11 +29,6 @@ export const actions = {
 
 
 export const getters = {
-  todos: function () {
-    let folder = state.folders.filter(val => val.name === 'default');
-    let todos = folder[0].todos;
-    return todos;
-  },
   folderNames:function(){
     let folderNames = [];
     state.folders.map(function (val) {
@@ -56,7 +54,14 @@ export const mutations = {
     state.folders = folders;
     let folder = state.folders.filter(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
     let todos = folder[0].todos;
-    state.todos = todos;//当前文件夹下的todos
+    state.todos = todos;
+  },
+
+  switchFolder (state, { folderName }) {
+    let folder = state.folders.filter(val => val.name === folderName);
+    let todos = folder[0].todos;
+    console.log(todos);
+    state.todos = todos;
   },
 
   // name 是文件夹的名称

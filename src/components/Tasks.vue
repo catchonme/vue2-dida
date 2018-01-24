@@ -6,7 +6,7 @@
           <mu-icon-button icon="menu" slot="left" @click="openLeftBar(true)"/>
           <mu-drawer :open="showLeftBar" :docked="docked" @close="openLeftBar()" class="left-bar">
             <mu-list @itemClick="docked ? '' : openLeftBar()">
-              <li v-for="name in folderNames">{{ name }}</li>
+              <li v-for="name in folderNames" @click="chooseFolder" value="name">{{ name }}</li>
               <mu-list-item for="folder in folderNames" title="folder"/>
             </mu-list>
           </mu-drawer>
@@ -82,6 +82,7 @@ export default {
       showLeftBar:false,
       docked: false,
       todoText:'',
+      forderName:''
     }
   },
   created(){
@@ -89,17 +90,15 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'todos',
       'folderNames'
       ]
     ),
     folders() {
       return this.$store.state.folders
     },
-    /*todos() {
-      var folder = this.folders.filter(folder => folder.name === 'default');
-      return folder[0].todos;
-    },*/
+    todos() {
+      return this.$store.state.todos
+    },
     filteredTodos () {
       return this.todos.filter(todo => !todo.done)
     },
@@ -163,14 +162,20 @@ export default {
       this.addButtonShow = true;
       this.dialogShow = false
     },
+    chooseFolder(val) {
+      this.showLeftBar = !this.showLeftBar;
+      let folderName = (String)(val.srcElement.innerHTML);
+      this.folderName = folderName;
+      this.$store.commit('switchFolder', { folderName })
+    },
     addTodo() {
-      var text = this.todoText.replace(/^\s+|\s+$/, " ");
-      var name = 'default';
+      let text = this.todoText.replace(/^\s+|\s+$/, " ");
+      let name = this.folderName || 'default';
+      console.log(this.folderName)
       if (text) {
         this.$store.commit('addTodo', { name, text })
       }
       this.todoText = '';
-      // console.log(this.$store.state.folders.todos)
       this.addButtonShow = true;
       this.dialogShow = false
     }
