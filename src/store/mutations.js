@@ -2,11 +2,9 @@ import {getStore, setStore, removeStore} from '../config/utils'
 
 export const STORAGE_KEY = 'tasks';
 
-const defaultStorage = [{name:'default', todos : [{text:'test',done:false}]}]
+const defaultStorage = [{name:'default', todos : [{text:'开始你的任务',done:false}]}]
 
 export const state = {
-  // folders: JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]')
-  // folders: [{name:'default', todos : []}]
   folders:[],
   todos:[]
 }
@@ -63,12 +61,11 @@ export const mutations = {
 
   // name 是文件夹的名称
   addTodo (state, { name, text }) {
-    var tasks = getStore(STORAGE_KEY);
+    var folders = state.folders;
     var folder = state.folders.find(folder => folder.name === name);
     console.log(folder);
     if (!folder) {
-      tasks[tasks.length].name = name;
-      tasks[tasks.length].todos = [{text:text, done:false}];
+      folders.push({name:name,todos:[{text:text,done:false}]});
     } else {
       folder.todos.push({text:text, done:false});
     }
