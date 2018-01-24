@@ -35,7 +35,7 @@
               <todo v-for="(todo, index) in filteredTodos" :key="index" :todo="todo"></todo>
             </ul>
           </div>
-          <div class="completedTodo" v-show="showCompleted">
+          <div class="completedTodo" v-show="showCompleted && completedTodo.length">
             <div class="doneTitle">已完成</div>
             <ul class="todo-list">
               <todo v-for="(todo, index) in completedTodo" :key="index" :todo="todo"></todo>
