@@ -12,13 +12,17 @@
                   <p class="username">滴答用户</p>
                 </div>
                 <div class="right">
-                  <mu-icon value="search"/>
+                  <mu-icon value="search" @click="toSearch"/>
+                  <mu-icon value="mail" />
                 </div>
               </div>
               <div class="left-main">
-                <mu-list-item v-for="folder in folderNames" :title="folder.name" @click="chooseFolder(folder.name)">
+                <mu-list-item v-for="folder in folderNames" :title="folder.name" :key="folder.name" @click="chooseFolder(folder.name)">
                   <mu-icon slot="left" value="inbox"/>
                   <mu-badge :content="folder.todoNum" slot="after"/>
+                </mu-list-item>
+                <mu-list-item title="添加清单" @click="addFolder">
+                  <mu-icon slot="left" value="add_circle"/>
                 </mu-list-item>
               </div>
             </mu-list>
@@ -57,7 +61,7 @@
         </div>
         <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="addTask"/>
         <mu-dialog :open="dialogShow" @close="close">
-          <mu-text-field hintText="准备做什么" class="demo-divider-form" v-model="todoText" :underlineShow="true" @keyup.enter="addTodo"/>
+          <mu-text-field :hintText="hintText" class="demo-divider-form" v-model="inputText" :underlineShow="true" @keyup.enter="addTodo"/>
           <div class="icon-container">
             <mu-icon-button icon="send" size="12" class="send-right" @click="addTodo"/>
           </div>
@@ -66,7 +70,7 @@
       <section class="footer">
         <mu-paper>
           <mu-bottom-nav :value="bottomNav" @change="selectBottomNav">
-            <mu-bottom-nav-item value="tasks" title="任务" icon="check box"/>
+            <mu-bottom-nav-item value="tasks" title="任务" icon="check_box"/>
             <mu-bottom-nav-item value="calendar" title="日历" icon="event"/>
             <mu-bottom-nav-item value="settings" title="设置" icon="settings"/>
           </mu-bottom-nav>
@@ -94,11 +98,13 @@ export default {
       showSortSheet:false,
       showLeftBar:false,
       docked: false,
-      todoText:'',
-      forderName:''
+      inputText:'',
+      forderName:'',
+      hintText:'',
+      addType:''
     }
   },
-  created(){
+  mounted(){
     this.$store.dispatch('getAllFolders');
   },
   computed: {
@@ -156,6 +162,11 @@ export default {
     },
     selectBottomNav(val) {
       this.bottomNav = val;
+      switch (val) {
+        case 'tasks': this.$router.push('./Tasks');break;
+        case 'calendar': this.$router.push('./Search'); break;
+        case 'settings': this.$router.push('./Tasks');break;
+      }
     },
     closeSortSheet() {
       this.showSortSheet = false;
@@ -165,8 +176,16 @@ export default {
       this.showSortSheet = true;
     },
     addTask() {
+      this.hintText = '准备做什么?';
+      this.addType = 'todo';
       this.addButtonShow = false;
-      this.dialogShow = true
+      this.dialogShow = true;
+    },
+    addFolder() {
+      this.hintText = '输入清单名称';
+      this.addType = 'folder';
+      this.addButtonShow = false;
+      this.dialogShow = true;
     },
     open () {
       this.dialogShow = true
@@ -180,15 +199,22 @@ export default {
       this.$store.commit('switchFolder', { folderName })
     },
     addTodo() {
-      let text = this.todoText.replace(/^\s+|\s+$/, " ");
-      let name = this.folderName || 'default';
-      console.log(this.folderName)
-      if (text) {
-        this.$store.commit('addTodo', { name, text })
+      let text = this.inputText.replace(/^\s+|\s+$/, " ");
+      if (!text) {
+        return;
       }
-      this.todoText = '';
+      if (this.addType == 'todo') {
+        let name = this.folderName || 'default';
+        this.$store.commit('addTodo', { name, text })
+      } else if (this.addType == 'folder') {
+        this.$store.commit('addFolder', text )
+      }
+      this.inputText = '';
       this.addButtonShow = true;
       this.dialogShow = false
+    },
+    toSearch() {
+      this.$router.push('./Search')
     }
   }
 }
@@ -227,13 +253,14 @@ export default {
   }
   .right{
     float:right;
-    margin-right:50px;
+    margin-right:30px;
   }
   .left-main {
 
   }
   .main {
     position: relative;
+    background-color:#fff;
   }
   .todo-list {
     margin: 0;

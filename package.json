@@ -11,7 +11,16 @@
   },
   "dependencies": {
     "fastclick": "^1.0.6",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
     "muse-ui": "^2.1.0",
+    "node-gyp": "^3.6.2",
+    "node-sass": "^4.7.2",
+    "sass": "^1.0.0-beta.4",
+    "sass-loader": "^6.0.6",
+    "scss": "^0.2.4",
+    "scss-loader": "0.0.1",
+    "style-loader": "^0.19.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

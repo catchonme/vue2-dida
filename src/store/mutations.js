@@ -1,6 +1,7 @@
 import {getStore, setStore, removeStore} from '../config/utils'
 
 export const STORAGE_KEY = 'tasks';
+export const SEARCH_HISTORY_key = 'tasks-search-history'
 
 const defaultStorage = [
   {name:'default', todos : [{text:'开始你的任务',done:false}]},
@@ -9,7 +10,8 @@ const defaultStorage = [
 
 export const state = {
   folders:[],
-  todos:[]
+  todos:[],
+  searchHistory:[]
 }
 
 export const actions = {
@@ -18,12 +20,18 @@ export const actions = {
     var folders = getStore(STORAGE_KEY);
     if (!folders) {
       setStore(STORAGE_KEY, defaultStorage);
-      // commit('setStorage', { defaultStorage });
       folders = getStore(STORAGE_KEY);
       commit('getAllFolders', { folders });
     } else {
       commit('getAllFolders', { folders });
     }
+  },
+  getSearchHistory ({ commit }) {
+    var searchHistory = getStore(SEARCH_HISTORY_key);
+    if(!searchHistory) {
+      searchHistory = [];
+    }
+    commit('getSearchHistory', { searchHistory });
   }
 }
 
@@ -38,7 +46,7 @@ export const getters = {
           unCompletedTodoNum++
         }
       })
-      folderNames.push({name:val.name,todoNum:unCompletedTodoNum});
+      folderNames.push({name:val.name,todoNum:(String)(unCompletedTodoNum)});
     });
     return folderNames;
   }
@@ -66,20 +74,35 @@ export const mutations = {
   switchFolder (state, { folderName }) {
     let folder = state.folders.filter(val => val.name === folderName);
     let todos = folder[0].todos;
-    console.log(todos);
     state.todos = todos;
   },
 
   // name 是文件夹的名称
   addTodo (state, { name, text }) {
-    var folders = state.folders;
-    var folder = state.folders.find(folder => folder.name === name);
-    console.log(folder);
+    let folders = state.folders;
+    let folder = state.folders.find(folder => folder.name === name);
     if (!folder) {
       folders.push({name:name,todos:[{text:text,done:false}]});
     } else {
       folder.todos.push({text:text, done:false});
     }
+  },
+
+  addFolder (state,  folder ) {
+    state.folders.push({name:folder,todos:[]});
+  },
+
+  getSearchHistory(state, searchHistory) {
+    console.log(state.searchHistory);return;
+    state.searchHistory = searchHistory;
+  },
+
+  addSearchHistory(state, search) {
+    state.searchHistory.push(search);
+  },
+
+  clearSearchHistory(state) {
+
   },
 
   deleteTodo( state, { todo } ) {

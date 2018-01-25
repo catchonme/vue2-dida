@@ -8,6 +8,7 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import '../src/style/css.css'
 import '../src/style/icon.css'
+import '../src/style/common.scss'
 import './config/rem'
 import FaskClick from 'fastclick'
 
