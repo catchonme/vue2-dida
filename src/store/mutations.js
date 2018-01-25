@@ -32,7 +32,13 @@ export const getters = {
   folderNames:function(){
     let folderNames = [];
     state.folders.map(function (val) {
-      folderNames.push(val.name);
+      let unCompletedTodoNum = 0;
+      val.todos.forEach(function(todo){
+        if (!todo.done) {
+          unCompletedTodoNum++
+        }
+      })
+      folderNames.push({name:val.name,todoNum:unCompletedTodoNum});
     });
     return folderNames;
   }

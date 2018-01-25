@@ -6,8 +6,21 @@
           <mu-icon-button icon="menu" slot="left" @click="openLeftBar(true)"/>
           <mu-drawer :open="showLeftBar" :docked="docked" @close="openLeftBar()" class="left-bar">
             <mu-list @itemClick="docked ? '' : openLeftBar()">
-              <li v-for="name in folderNames" @click="chooseFolder" value="name">{{ name }}</li>
-              <mu-list-item for="folder in folderNames" title="folder"/>
+              <div class="left-header">
+                <div class="left">
+                  <img src="../images/uicon.jpg" class="avatar">
+                  <p class="username">滴答用户</p>
+                </div>
+                <div class="right">
+                  <mu-icon value="search"/>
+                </div>
+              </div>
+              <div class="left-main">
+                <mu-list-item v-for="folder in folderNames" :title="folder.name" @click="chooseFolder(folder.name)">
+                  <mu-icon slot="left" value="inbox"/>
+                  <mu-badge :content="folder.todoNum" slot="after"/>
+                </mu-list-item>
+              </div>
             </mu-list>
           </mu-drawer>
           <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>
@@ -162,9 +175,7 @@ export default {
       this.addButtonShow = true;
       this.dialogShow = false
     },
-    chooseFolder(val) {
-      this.showLeftBar = !this.showLeftBar;
-      let folderName = (String)(val.srcElement.innerHTML);
+    chooseFolder(folderName) {
       this.folderName = folderName;
       this.$store.commit('switchFolder', { folderName })
     },
@@ -184,8 +195,42 @@ export default {
 </script>
 
 <style scoped>
+  .avatar {
+    position: relative;
+    width:60px;
+    height:60px;
+    border-radius:30px;
+    margin:10px 0 0 25px;
+  }
+  .username {
+    height:15px;
+    line-height: 15px;
+    font-size:.7rem;
+    margin: -15px 0 10px 25px;
+  }
   .left-bar {
-    background: #FFCCCC;
+    /*background: #FFCCCC;*/
+  }
+  .left-header {
+    margin-top:-10px;
+    background: #FFCC99;
+  }
+  .left-header:after{
+    content:',';
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+  }
+  .left {
+    float:left;
+  }
+  .right{
+    float:right;
+    margin-right:50px;
+  }
+  .left-main {
+
   }
   .main {
     position: relative;
