@@ -7,28 +7,31 @@
       <input type="search" name="search" placeholder="请输入任务名称" class="search-input" v-model="searchValue" @input="checkInput">
       <input type="submit" name="submit" class="search-submit" @click.prevent="searchTask('')">
     </form>
-    <section class="search-results">
-      <ul class="todo-list">
-        <!--<todo v-for="(todo, index) in filteredTodos" :key="index" :todo="todo"></todo>-->
+    <section class="search-results" v-if="!showHistory">
+      <ul class="todo-list" v-if="searchResults.length">
+        <todo v-for="(todo, index) in searchResults" :key="index" :todo="todo"></todo>
       </ul>
+      <div class="search-none" v-else>很抱歉，无搜索结果</div>
     </section>
     <section class="search-history" v-if="searchHistory.length && showHistory">
       <h4 class="title-search-tasks">搜索历史</h4>
       <mu-list class="search-history-list">
-        <mu-list-item v-for="(item, index) in searchHistory" :title="item" :key="index">
-          <mu-icon slot="right" value="clear" @click="clearCurrentHistory(index)"/>
+        <mu-list-item v-for="(item, index) in searchHistory" :title="item" :key="index" @click="searchFromHistory(item)">
+          <mu-icon slot="right" value="clear" @click="deleteSearchHistory(index)"/>
         </mu-list-item>
       </mu-list>
-      <div class="clear-history" v-if="!searchHistory.length" @click="clearAllHistory">清空搜索历史</div>
+      <mu-divider/>
+      <div class="clear-history" @click="clearSearchHistory">清空搜索历史</div>
     </section>
   </div>
 </template>
 
 <script>
+  import Todo from './Todo'
   import { mapMutations } from 'vuex';
-  import { setStore, getStore } from '../config/utils'
-  import { SEARCH_HISTORY_key } from '../store/mutations'
+
   export default {
+    components: { Todo },
     data() {
       return {
         searchValue:'',
@@ -38,6 +41,7 @@
     },
     created() {
       this.$store.dispatch('getSearchHistory');
+      this.$store.dispatch('getAllFolders');
     },
     computed: {
       searchHistory(){
@@ -49,34 +53,50 @@
     },
     methods:{
       ...mapMutations([
-        'addSearchHistory'
+        'addSearchHistory',
+        'deleteSearchHistory',
+        'clearSearchHistory'
       ]),
       back() {
         this.$router.go(-1);
       },
       checkInput() {
-
+        if (this.searchValue == '') {
+          this.showHistory = true;
+        }
       },
       searchTask() {
-        this.searchHistory.push(this.searchValue);
-        setStore(SEARCH_HISTORY_key, this.searchHistory);
-        this.addSearchHistory(this.searchValue);
-        let searchResults = [];
-        folders.forEach(function(val){
+        this.showHistory = false;
+        if (this.searchHistory.indexOf(this.searchValue) === -1) {
+          this.addSearchHistory(this.searchValue);
+        }
+        console.log(this.searchValue);
+        let search = this.searchValue;
+        let results = []
+        this.folders.forEach(function(val){
           val.todos.forEach(function(item){
-            if (item.)
+            if (item.text.indexOf(search) > -1) {
+              results.push(item);
+            }
           })
         })
-
+        this.searchResults = results;
+        console.log(this.searchResults);
       },
-      clearCurrentHistory(index) {
-        this.searchHistory.splice(index,1);
-        setStore(SEARCH_HISTORY_key, this.searchHistory);
+      searchFromHistory(val) {
+        this.searchValue = val;
+        this.searchTask();
+      }
+      /*deleteSearchHistory(index) {
+        // this.searchHistory.splice(index,1);
+        this.deleteSearchHistory(index);
+        let temp = getStore(SEARCH_HISTORY_KEY);
+        console.log(temp);
       },
       clearAllHistory() {
-        this.searchHistory = [];
-        setStore(SEARCH_HISTORY_key, this.searchHistory);
-      }
+        this.clearAllHistory();
+        removeStore(SEARCH_HISTORY_KEY);
+      }*/
     }
 
   }
@@ -122,7 +142,10 @@
 .search-history {
   .clear-history {
     background-color:#fff;
-    color:#e4e4e4;
+    color:#3190e8;
+    height:1.5rem;
+    line-height:1.5rem;
+    font-size:1em;
     font-weight:bold;
     text-align:center;
   }
@@ -131,6 +154,9 @@
     margin:0 auto;
   }
 }
+.search-results {
+  background-color:#fff;
+  margin-top:.2rem;
   .search-none {
     margin:0 auto;
     color:#333;
@@ -138,4 +164,5 @@
     text-align:center;
     margin-top:0.125rem;
   }
+}
 </style>

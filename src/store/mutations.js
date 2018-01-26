@@ -1,7 +1,7 @@
 import {getStore, setStore, removeStore} from '../config/utils'
 
 export const STORAGE_KEY = 'tasks';
-export const SEARCH_HISTORY_key = 'tasks-search-history'
+export const SEARCH_HISTORY_KEY = 'tasks-search-history'
 
 const defaultStorage = [
   {name:'default', todos : [{text:'开始你的任务',done:false}]},
@@ -27,11 +27,11 @@ export const actions = {
     }
   },
   getSearchHistory ({ commit }) {
-    var searchHistory = getStore(SEARCH_HISTORY_key);
+    var searchHistory = getStore(SEARCH_HISTORY_KEY);
     if(!searchHistory) {
       searchHistory = [];
     }
-    commit('getSearchHistory', { searchHistory });
+    commit('getSearchHistory',  searchHistory );
   }
 }
 
@@ -71,6 +71,13 @@ export const mutations = {
     state.todos = todos;
   },
 
+  getCurrentFolders(state, { folders }) {
+    state.folders = folders;
+    let folder = state.folders.filter(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
+    let todos = folder[0].todos;
+    state.todos = todos;
+  },
+
   switchFolder (state, { folderName }) {
     let folder = state.folders.filter(val => val.name === folderName);
     let todos = folder[0].todos;
@@ -93,16 +100,19 @@ export const mutations = {
   },
 
   getSearchHistory(state, searchHistory) {
-    console.log(state.searchHistory);return;
     state.searchHistory = searchHistory;
   },
 
   addSearchHistory(state, search) {
-    state.searchHistory.push(search);
+    state.searchHistory.unshift(search);
+  },
+
+  deleteSearchHistory(state, index) {
+    state.searchHistory.splice(index, 1);
   },
 
   clearSearchHistory(state) {
-
+    state.searchHistory = [];
   },
 
   deleteTodo( state, { todo } ) {
