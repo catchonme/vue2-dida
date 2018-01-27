@@ -12,10 +12,11 @@ const defaultStorage = [
 const defaultConfig = {showCompleted:false}
 
 export const state = {
+  config:[],
   folders:[],
   todos:[],
   searchHistory:[],
-  config:[]
+  detail:{}
 }
 
 export const actions = {
@@ -73,11 +74,11 @@ export const mutations = {
     console.log('--------config----');
     console.log(config);
     state.folders = folders;
-    let folder = state.folders.filter(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
-    let todos = folder[0].todos;
+    let folder = state.folders.find(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
+    let todos = folder.todos;
     let stateTodos = [];
     todos.forEach(function(todo, index){
-      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder[0].name})
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder.name})
     })
     state.todos = stateTodos;
     state.config = config;
@@ -85,17 +86,29 @@ export const mutations = {
 
   getCurrentFolders(state, { folders }) {
     state.folders = folders;
-    let folder = state.folders.filter(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
-    let todos = folder[0].todos;
+    let folder = state.folders.find(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
+    let todos = folder.todos;
     state.todos = todos;
   },
 
+  getTaskDetail(state, {folderName, taskIndex}) {
+    let folders = state.folders;
+    let detail = {};
+    folders.forEach(function(val) {
+      if (val.name == folderName) {
+        let todo = val.todos[taskIndex];
+        detail = {taskIndex:taskIndex, title:todo.text, content:todo.text, done:todo.done, folderName:folderName}
+      }
+    })
+    state.detail = detail;
+  },
+
   switchFolder (state, { folderName }) {
-    let folder = state.folders.filter(val => val.name === folderName);
-    let todos = folder[0].todos;
+    let folder = state.folders.find(val => val.name === folderName);
+    let todos = folder.todos;
     let stateTodos = [];
     todos.forEach(function(todo, index){
-      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder[0].name})
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder.name})
     })
     state.todos = stateTodos;
   },
@@ -109,6 +122,14 @@ export const mutations = {
     } else {
       folder.todos.push({text:text, done:false});
     }
+    console.log(folder);
+    // let folder = state.folders.filter(val => val.name === item.folderName);
+    let todos = folder.todos;
+    let stateTodos = [];
+    todos.forEach(function(todo, index){
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder.name})
+    })
+    state.todos = stateTodos;
     setStore(STORAGE_KEY, folders);
   },
 
@@ -144,11 +165,11 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    let folder = state.folders.filter(val => val.name === item.folderName);
-    let todos = folder[0].todos;
+    let folder = state.folders.find(val => val.name === item.folderName);
+    let todos = folder.todos;
     let stateTodos = [];
     todos.forEach(function(todo, index){
-      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder[0].name})
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder.name})
     })
     state.todos = stateTodos;
     setStore(STORAGE_KEY, folders);

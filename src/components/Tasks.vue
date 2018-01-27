@@ -49,13 +49,13 @@
         <div class="main" v-show="todos.length">
           <div class="activeTodo" v-show="todos.length">
             <ul class="todo-list">
-              <todo v-for="(item, index) in filteredTodos" :key="index" :todo="item" :folderName="item.forderName"></todo>
+              <todo v-for="(item, index) in filteredTodos" :key="index" :todo="item" :folderName="item.forderName" ></todo>
             </ul>
           </div>
           <div class="completedTodo" v-show="showCompleted && completedTodo.length">
             <div class="doneTitle">已完成</div>
             <ul class="todo-list">
-              <todo v-for="(item, index) in completedTodo" :key="index" :todo="item" :folderName="item.forderName"></todo>
+              <todo v-for="(item, index) in completedTodo" :key="index" :todo="item"></todo>
             </ul>
           </div>
         </div>
