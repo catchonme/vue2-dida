@@ -1,16 +1,21 @@
 <template>
-<div>
+<div style="background: #fff">
   <mu-appbar>
     <mu-icon-button icon="chevron_left" slot="left" @click="back"/>
+    <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>
   </mu-appbar>
-  <section>
-    <div class="view">
+  <section class="main">
+    <!--<div class="view">
       <input class="toggle"
              type="checkbox">
-             <!--:checked="todo.done"-->
-             <!--@change="toggleTask(todo)">-->
-      <!--<label v-text="todo.text"></label>-->
-    </div>
+             &lt;!&ndash;:checked="todo.done"&ndash;&gt;
+             &lt;!&ndash;@change="toggleTask(todo)">&ndash;&gt;
+      &lt;!&ndash;<label v-text="todo.text"></label>&ndash;&gt;
+    </div>-->
+    <form class="detail-form">
+      <input class="title" type="text" placeholder="标题" >
+      <div class="content" contenteditable="true">she</div>
+    </form>
   </section>
 </div>
 </template>
@@ -23,7 +28,7 @@
 
       }
     },
-    mounted:{
+    mounted(){
       /*mountedTask:function(){
         let query = this.$router.query;
         console.log(query);return;
@@ -45,6 +50,9 @@
       ...mapMutations([
         'getTaskDetail'
       ]),
+      openBottomSheet() {
+
+      },
       back(){
         // console.log(this.mountedTask);
         this.$router.go(-1);
@@ -53,7 +61,36 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .main {
+    background-color:#fff;
+    /*width:100%;*/
+    /*margin:0 auto;*/
+  }
+  .detail-form{
+    display:flex;
+    /*margin:0 auto;*/
+    flex-direction: column;
+    padding:.5rem;
+    .title {
+      flex:1;
+      line-height:2rem;
+      height:2rem;
+      border-bottom:1px solid #ccc;
+    }
+    .content {
+      flex:5;
+      position: absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      top:5rem;
+      padding:0.8rem;
+      /*width:100%;*/
+      /*height:500px;*/
+      background-color:#fff;
+    }
+  }
   .view {
     padding-left:20px;
   }
