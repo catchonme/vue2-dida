@@ -8,16 +8,9 @@
       <input type="submit" name="submit" class="search-submit" @click.prevent="searchTask('')">
     </form>
     <section class="search-results" v-if="!showHistory">
-      <div v-if="searchResults.length">
-        <mu-list-item v-for="(item, index) in searchResults" :key="index" @click="toggleTask(item)">
-          <mu-checkbox :label="item.text" class="demo-checkbox" @click="toggleTask(item)"/>
-          <mu-divider/>
-        </mu-list-item>
-
-      </div>
-      <!--<ul class="todo-list" v-if="searchResults.length">
-        <todo v-for="(todo, index) in searchResults" :key="index" :todo="todo"></todo>
-      </ul>-->
+      <ul class="todo-list" v-if="searchResults.length">
+        <todo v-for="(item, index) in searchResults" :key="index" :todo="item" :folderName="item.forderName"></todo>
+      </ul>
       <div class="search-none" v-else>很抱歉，无搜索结果</div>
     </section>
     <section class="search-history" v-if="searchHistory.length && showHistory">
@@ -43,7 +36,8 @@
       return {
         searchValue:'',
         showHistory:true,
-        searchResults:[]
+        searchResults:[],
+        list:[]
       }
     },
     created() {
@@ -58,6 +52,11 @@
         return this.$store.state.folders;
       }
     },
+    watch:{
+      list:function(){
+        console.log(this.list)
+      }
+    },
     methods:{
       ...mapMutations([
         'addSearchHistory',
@@ -65,6 +64,12 @@
         'clearSearchHistory',
         'toggleTask'
       ]),
+      detaill() {
+        console.log('detail');
+      },
+      check(item){
+        console.log(item);
+      },
       back() {
         this.$router.go(-1);
       },
@@ -78,7 +83,6 @@
         if (this.searchHistory.indexOf(this.searchValue) === -1) {
           this.addSearchHistory(this.searchValue);
         }
-        console.log(this.searchValue);
         let search = this.searchValue;
         let results = []
         this.folders.forEach(function(val){
@@ -111,6 +115,16 @@
 </script>
 
 <style lang="scss" scoped>
+  .todo-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .todo-list li {
+    position: relative;
+    font-size: 24px;
+    border-bottom: 1px solid #ededed;
+  }
 .search-form {
   background-color:#fff;
   padding:.5rem;
@@ -163,6 +177,7 @@
   }
 }
 .search-results {
+  position: relative;
   background-color:#fff;
   margin-top:.2rem;
   .search-none {
@@ -171,6 +186,19 @@
     background-color:#fff;
     text-align:center;
     margin-top:0.125rem;
+  }
+  .task-list {
+    width:80%;
+    li {
+      /*margin-left:100px;*/
+      margin:0 auto;
+      height:3em;
+      line-height:3em;
+      .task-title {
+        margin-left:20px;
+        margin-top:-20px;
+      }
+    }
   }
 }
 </style>

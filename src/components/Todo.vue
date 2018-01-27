@@ -4,7 +4,7 @@
       <input class="toggle"
              type="checkbox"
              :checked="todo.done"
-             @change="toggleTodo({ todo:todo })">
+             @change="toggleTask(todo)">
       <label v-text="todo.text"></label>
     </div>
   </li>
@@ -14,10 +14,10 @@
   import { mapMutations } from 'vuex'
   export default {
     name: "Todo",
-    props:['todo'],
+    props:['todo', 'folderName'],
     methods:{
       ...mapMutations([
-        'toggleTodo'
+        'toggleTask'
       ]),
     }
   }

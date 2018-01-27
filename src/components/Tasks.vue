@@ -49,13 +49,13 @@
         <div class="main" v-show="todos.length">
           <div class="activeTodo" v-show="todos.length">
             <ul class="todo-list">
-              <todo v-for="(todo, index) in filteredTodos" :key="index" :todo="todo"></todo>
+              <todo v-for="(item, index) in filteredTodos" :key="index" :todo="item" :folderName="item.forderName"></todo>
             </ul>
           </div>
           <div class="completedTodo" v-show="showCompleted && completedTodo.length">
             <div class="doneTitle">已完成</div>
             <ul class="todo-list">
-              <todo v-for="(todo, index) in completedTodo" :key="index" :todo="todo"></todo>
+              <todo v-for="(item, index) in completedTodo" :key="index" :todo="item" :folderName="item.forderName"></todo>
             </ul>
           </div>
         </div>
@@ -82,7 +82,7 @@
 
 <script>
 import Todo from './Todo'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
   components: { Todo },
@@ -94,12 +94,10 @@ export default {
       bottomNav:'tasks',
       addButtonShow:true,
       dialogShow:false,
-      showCompleted:false,
       showSortSheet:false,
       showLeftBar:false,
       docked: false,
       inputText:'',
-      forderName:'',
       hintText:'',
       addType:''
     }
@@ -109,15 +107,14 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'folderNames'
+      'folderNames',
       ]
     ),
-    folders() {
-      return this.$store.state.folders
-    },
-    todos() {
-      return this.$store.state.todos
-    },
+    ...mapState({
+      showCompleted: state => state.config.showCompleted,
+      folders: state => state.folders,
+      todos: state => state.todos
+    }),
     filteredTodos () {
       return this.todos.filter(todo => !todo.done)
     },
@@ -126,6 +123,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'saveConfig'
+    ]),
     openLeftBar(flag) {
       this.showLeftBar = !this.showLeftBar;
       this.docked = !flag
@@ -141,12 +141,8 @@ export default {
       switch (selected) {
         case 'showCompleted' :
           {
-            if(this.showCompleted) {
-              this.showCompleted = false;
-            } else {
-              this.showCompleted = true;
-            }
             this.bottomSheet = false;
+            this.saveConfig({name:'showCompleted',value:!this.showCompleted});
           }; break;
         case 'showSort' :
           {

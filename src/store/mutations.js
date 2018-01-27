@@ -2,29 +2,34 @@ import {getStore, setStore, removeStore} from '../config/utils'
 
 export const STORAGE_KEY = 'tasks';
 export const SEARCH_HISTORY_KEY = 'tasks-search-history'
+export const CONFIG_KEY = 'tasks-config'
 
 const defaultStorage = [
   {name:'default', todos : [{text:'开始你的任务',done:false}]},
   {name:'今天', todos : [{text:'开始你的任务',done:false}]},
   ]
 
+const defaultConfig = {showCompleted:false}
+
 export const state = {
   folders:[],
   todos:[],
-  searchHistory:[]
+  searchHistory:[],
+  config:[]
 }
 
 export const actions = {
   getAllFolders ({commit}) {
     // removeStore(STORAGE_KEY);
     var folders = getStore(STORAGE_KEY);
+    var config = getStore(CONFIG_KEY);
     if (!folders) {
       setStore(STORAGE_KEY, defaultStorage);
+      setStore(CONFIG_KEY, defaultConfig);
       folders = getStore(STORAGE_KEY);
-      commit('getAllFolders', { folders });
-    } else {
-      commit('getAllFolders', { folders });
+      config = getStore(CONFIG_KEY);
     }
+    commit('getAllFolders', { folders, config});
   },
   getSearchHistory ({ commit }) {
     var searchHistory = getStore(SEARCH_HISTORY_KEY);
@@ -64,11 +69,18 @@ export const mutations = {
     })
   },*/
 
-  getAllFolders (state, { folders }) {
+  getAllFolders (state, { folders, config}) {
+    console.log('--------config----');
+    console.log(config);
     state.folders = folders;
     let folder = state.folders.filter(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
     let todos = folder[0].todos;
-    state.todos = todos;
+    let stateTodos = [];
+    todos.forEach(function(todo, index){
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder[0].name})
+    })
+    state.todos = stateTodos;
+    state.config = config;
   },
 
   getCurrentFolders(state, { folders }) {
@@ -81,7 +93,11 @@ export const mutations = {
   switchFolder (state, { folderName }) {
     let folder = state.folders.filter(val => val.name === folderName);
     let todos = folder[0].todos;
-    state.todos = todos;
+    let stateTodos = [];
+    todos.forEach(function(todo, index){
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder[0].name})
+    })
+    state.todos = stateTodos;
   },
 
   // name 是文件夹的名称
@@ -121,29 +137,32 @@ export const mutations = {
   },
 
   toggleTask(state, item) {
-    console.log('------传值')
-    console.log(item);
     let folders = state.folders;
     folders.forEach(function(folder){
       if (folder.name == item.folderName) {
-        console.log(folder.todos[item.taskIndex]);
         folder.todos[item.taskIndex].done = !folder.todos[item.taskIndex].done;
       }
     })
     state.folders = folders;
+    let folder = state.folders.filter(val => val.name === item.folderName);
+    let todos = folder[0].todos;
+    let stateTodos = [];
+    todos.forEach(function(todo, index){
+      stateTodos.push({taskIndex:index, text:todo.text, done:todo.done, folderName:folder[0].name})
+    })
+    state.todos = stateTodos;
     setStore(STORAGE_KEY, folders);
-    console.log('---结果')
-    console.log(state.folders);
   },
 
   deleteTodo( state, { todo } ) {
     state.todos.splice(state.todos.indexOf(todo), 1)
-    setStore(STORAGE_KEY, state.folders);
+    // setStore(STORAGE_KEY, state.folders);
   },
 
   toggleTodo (state, { todo }) {
+    console.log(todo);
     todo.done = !todo.done;
-    setStore(STORAGE_KEY, state.folders);
+    // setStore(STORAGE_KEY, state.folders);
   },
 
   editTodo (state, { todo, text, priority, folder, date  }) {
@@ -165,5 +184,10 @@ export const mutations = {
 
   clearAllTodo (state) {
     window.localStorage.removeItem(STORAGE_KEY);
+  },
+
+  saveConfig(state, options) {
+    state.config[options.name] = options.value;
+    setStore(CONFIG_KEY, state.config);
   }
 }
