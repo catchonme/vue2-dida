@@ -8,9 +8,16 @@
       <input type="submit" name="submit" class="search-submit" @click.prevent="searchTask('')">
     </form>
     <section class="search-results" v-if="!showHistory">
-      <ul class="todo-list" v-if="searchResults.length">
+      <div v-if="searchResults.length">
+        <mu-list-item v-for="(item, index) in searchResults" :key="index" @click="toggleTask(item)">
+          <mu-checkbox :label="item.text" class="demo-checkbox" @click="toggleTask(item)"/>
+          <mu-divider/>
+        </mu-list-item>
+
+      </div>
+      <!--<ul class="todo-list" v-if="searchResults.length">
         <todo v-for="(todo, index) in searchResults" :key="index" :todo="todo"></todo>
-      </ul>
+      </ul>-->
       <div class="search-none" v-else>很抱歉，无搜索结果</div>
     </section>
     <section class="search-history" v-if="searchHistory.length && showHistory">
@@ -55,7 +62,8 @@
       ...mapMutations([
         'addSearchHistory',
         'deleteSearchHistory',
-        'clearSearchHistory'
+        'clearSearchHistory',
+        'toggleTask'
       ]),
       back() {
         this.$router.go(-1);
@@ -74,9 +82,9 @@
         let search = this.searchValue;
         let results = []
         this.folders.forEach(function(val){
-          val.todos.forEach(function(item){
+          val.todos.forEach(function(item, itemIndex){
             if (item.text.indexOf(search) > -1) {
-              results.push(item);
+              results.push({taskIndex:(String)(itemIndex), text:item.text, done:item.done, folderName:val.name} );
             }
           })
         })
@@ -86,7 +94,7 @@
       searchFromHistory(val) {
         this.searchValue = val;
         this.searchTask();
-      }
+      },
       /*deleteSearchHistory(index) {
         // this.searchHistory.splice(index,1);
         this.deleteSearchHistory(index);

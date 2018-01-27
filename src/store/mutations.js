@@ -16,7 +16,7 @@ export const state = {
 
 export const actions = {
   getAllFolders ({commit}) {
-    removeStore(STORAGE_KEY);
+    // removeStore(STORAGE_KEY);
     var folders = getStore(STORAGE_KEY);
     if (!folders) {
       setStore(STORAGE_KEY, defaultStorage);
@@ -93,10 +93,12 @@ export const mutations = {
     } else {
       folder.todos.push({text:text, done:false});
     }
+    setStore(STORAGE_KEY, folders);
   },
 
   addFolder (state,  folder ) {
     state.folders.push({name:folder,todos:[]});
+    setStore(STORAGE_KEY, state.folders);
   },
 
   getSearchHistory(state, searchHistory) {
@@ -105,22 +107,43 @@ export const mutations = {
 
   addSearchHistory(state, search) {
     state.searchHistory.unshift(search);
+    setStore(SEARCH_HISTORY_KEY, state.searchHistory);
   },
 
   deleteSearchHistory(state, index) {
     state.searchHistory.splice(index, 1);
+    setStore(SEARCH_HISTORY_KEY, state.searchHistory);
   },
 
   clearSearchHistory(state) {
     state.searchHistory = [];
+    setStore(SEARCH_HISTORY_KEY, state.searchHistory);
+  },
+
+  toggleTask(state, item) {
+    console.log('------传值')
+    console.log(item);
+    let folders = state.folders;
+    folders.forEach(function(folder){
+      if (folder.name == item.folderName) {
+        console.log(folder.todos[item.taskIndex]);
+        folder.todos[item.taskIndex].done = !folder.todos[item.taskIndex].done;
+      }
+    })
+    state.folders = folders;
+    setStore(STORAGE_KEY, folders);
+    console.log('---结果')
+    console.log(state.folders);
   },
 
   deleteTodo( state, { todo } ) {
     state.todos.splice(state.todos.indexOf(todo), 1)
+    setStore(STORAGE_KEY, state.folders);
   },
 
   toggleTodo (state, { todo }) {
-    todo.done = !todo.done
+    todo.done = !todo.done;
+    setStore(STORAGE_KEY, state.folders);
   },
 
   editTodo (state, { todo, text, priority, folder, date  }) {

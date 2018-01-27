@@ -17,7 +17,7 @@
                 </div>
               </div>
               <div class="left-main">
-                <mu-list-item v-for="folder in folderNames" :title="folder.name" :key="folder.name" @click="chooseFolder(folder.name)">
+                <mu-list-item v-for="(folder, index) in folderNames" :title="folder.name" :key="index" @click="chooseFolder(folder.name)">
                   <mu-icon slot="left" value="inbox"/>
                   <mu-badge :content="folder.todoNum" slot="after"/>
                 </mu-list-item>
