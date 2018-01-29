@@ -13,8 +13,8 @@
       &lt;!&ndash;<label v-text="todo.text"></label>&ndash;&gt;
     </div>-->
     <form class="detail-form">
-      <input class="title" type="text" placeholder="准备做什么" :value="detail.title" @change="editTitle">
-      <div class="content" contenteditable="true">{{detail.content}}</div>
+      <input class="title" type="text" placeholder="准备做什么" v-model="detail.title" @change="editTitle">
+      <div class="content" id="content" contenteditable="true" v-model="detail.content">{{detail.content}}</div>
     </form>
   </section>
 </div>
@@ -25,9 +25,8 @@
   export default {
     data(){
       return{
-        folderName:this.$route.query.folderName,
-        taskIndex:this.$route.query.taskIndex,
-        detail:{}
+        detail:{},
+        input:''
       }
     },
     created(){
@@ -42,16 +41,21 @@
     },
     methods:{
       ...mapMutations([
-        'getTaskDetail'
+        'getTaskDetail',
+        'editTask'
       ]),
       openBottomSheet() {
 
       },
-      editTitle(){
-        console.log(this.detail);
+      editTitle(val){
+        console.log(this.detail.title);
       },
       back(){
-        // console.log(this.mountedTask);
+        let content = document.getElementById("content").innerText;
+        let title = this.detail.title;
+        let folderName = this.$route.query.folderName;
+        let taskIndex = this.$route.query.taskIndex;
+        this.editTask({folderName, taskIndex, title, content});
         this.$router.go(-1);
       }
     }

@@ -41,7 +41,6 @@ export const actions = {
   }
 }
 
-
 export const getters = {
   folderNames:function(){
     let folderNames = [];
@@ -58,9 +57,7 @@ export const getters = {
   }
 }
 
-
 export const mutations = {
-
   getAllFolders (state, { folders, config}) {
     state.folders = folders;
     let folder = state.folders.find(folder => folder.name === 'default'); // 刚登录显式默认文件夹的任务
@@ -169,11 +166,15 @@ export const mutations = {
     // setStore(STORAGE_KEY, state.folders);
   },
 
-  editTask (state, { task, text, priority, folder, date  }) {
-    task.text = text;
-    task.priority = priority;
-    task.folder = folder;
-    task.date = date;
+  editTask (state, { folderName, taskIndex, title, content  }) {
+    let folders = state.folders;
+    folders.forEach(function(folder) {
+      if (folder.name == folderName) {
+        folder.tasks[taskIndex].title = title;
+        folder.tasks[taskIndex].content = content;
+      }
+    });
+    setStore(STORAGE_KEY, folders);
   },
 
   toggleAll (state, { done }) {
