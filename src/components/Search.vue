@@ -8,8 +8,8 @@
       <input type="submit" name="submit" class="search-submit" @click.prevent="searchTask('')">
     </form>
     <section class="search-results" v-if="!showHistory">
-      <ul class="todo-list" v-if="searchResults.length">
-        <todo v-for="(item, index) in searchResults" :key="index" :todo="item" :folderName="item.forderName"></todo>
+      <ul class="task-list" v-if="searchResults.length">
+        <task v-for="(item, index) in searchResults" :key="index" :task="item" :folderName="item.forderName"></task>
       </ul>
       <div class="search-none" v-else>很抱歉，无搜索结果</div>
     </section>
@@ -27,11 +27,11 @@
 </template>
 
 <script>
-  import Todo from './Todo'
+  import Task from './Task'
   import { mapMutations } from 'vuex';
 
   export default {
-    components: { Todo },
+    components: { Task },
     data() {
       return {
         searchValue:'',
@@ -85,10 +85,10 @@
         }
         let search = this.searchValue;
         let results = []
-        this.folders.forEach(function(val){
-          val.todos.forEach(function(item, itemIndex){
-            if (item.text.indexOf(search) > -1) {
-              results.push({taskIndex:(String)(itemIndex), text:item.text, done:item.done, folderName:val.name} );
+        this.folders.forEach(function(folder){
+          folder.tasks.forEach(function(task, index){
+            if (task.title.indexOf(search) > -1) {
+              results.push({taskIndex:(String)(index), title:task.title, done:task.done, folderName:folder.name} );
             }
           })
         })
@@ -115,12 +115,12 @@
 </script>
 
 <style lang="scss" scoped>
-  .todo-list {
+  .task-list {
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .todo-list li {
+  .task-list li {
     position: relative;
     font-size: 24px;
     border-bottom: 1px solid #ededed;

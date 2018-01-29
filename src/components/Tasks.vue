@@ -19,9 +19,9 @@
               <div class="left-main">
                 <mu-list-item v-for="(folder, index) in folderNames" :title="folder.name" :key="index" @click="chooseFolder(folder.name)">
                   <mu-icon slot="left" value="inbox"/>
-                  <mu-badge :content="folder.todoNum" slot="after"/>
+                  <mu-badge :content="folder.taskNum" slot="after"/>
                 </mu-list-item>
-                <mu-list-item title="添加清单" @click="addFolder">
+                <mu-list-item title="添加清单" @click="showAddFolder">
                   <mu-icon slot="left" value="add_circle"/>
                 </mu-list-item>
               </div>
@@ -46,24 +46,24 @@
         </mu-appbar>
       </section>
       <section>
-        <div class="main" v-show="todos.length">
-          <div class="activeTodo" v-show="todos.length">
-            <ul class="todo-list">
-              <todo v-for="(item, index) in filteredTodos" :key="index" :todo="item" :folderName="item.forderName" ></todo>
+        <div class="main" v-show="tasks.length">
+          <div class="activeTask" v-show="tasks.length">
+            <ul class="task-list">
+              <task v-for="(task, index) in filteredTasks" :key="index" :task="task" :folderName="task.forderName" ></task>
             </ul>
           </div>
-          <div class="completedTodo" v-show="showCompleted && completedTodo.length">
+          <div class="completedTask" v-show="showCompleted && completedTasks.length">
             <div class="doneTitle">已完成</div>
-            <ul class="todo-list">
-              <todo v-for="(item, index) in completedTodo" :key="index" :todo="item"></todo>
+            <ul class="task-list">
+              <task v-for="(task, index) in completedTasks" :key="index" :task="task"></task>
             </ul>
           </div>
         </div>
-        <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="addTask"/>
+        <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="showAddTask"/>
         <mu-dialog :open="dialogShow" @close="close">
-          <mu-text-field :hintText="hintText" class="demo-divider-form" v-model="inputText" :underlineShow="true" @keyup.enter="addTodo"/>
+          <mu-text-field :hintText="hintText" class="demo-divider-form" v-model="inputText" :underlineShow="true" @keyup.enter="addTask"/>
           <div class="icon-container">
-            <mu-icon-button icon="send" size="12" class="send-right" @click="addTodo"/>
+            <mu-icon-button icon="send" size="12" class="send-right" @click="addTask"/>
           </div>
         </mu-dialog>
       </section>
@@ -81,11 +81,11 @@
 </template>
 
 <script>
-import Todo from './Todo'
+import Task from './Task'
 import { mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
-  components: { Todo },
+  components: { Task },
   name: 'Tasks',
   data () {
     return {
@@ -113,13 +113,13 @@ export default {
     ...mapState({
       showCompleted: state => state.config.showCompleted,
       folders: state => state.folders,
-      todos: state => state.todos
+      tasks: state => state.tasks
     }),
-    filteredTodos () {
-      return this.todos.filter(todo => !todo.done)
+    filteredTasks () {
+      return this.tasks.filter(task => !task.done)
     },
-    completedTodo() {
-      return this.todos.filter(todo => todo.done)
+    completedTasks() {
+      return this.tasks.filter(task => task.done)
     }
   },
   methods: {
@@ -171,13 +171,13 @@ export default {
       this.bottomSheet = false
       this.showSortSheet = true;
     },
-    addTask() {
+    showAddTask() {
       this.hintText = '准备做什么?';
-      this.addType = 'todo';
+      this.addType = 'task';
       this.addButtonShow = false;
       this.dialogShow = true;
     },
-    addFolder() {
+    showAddFolder() {
       this.hintText = '输入清单名称';
       this.addType = 'folder';
       this.addButtonShow = false;
@@ -194,14 +194,18 @@ export default {
       this.folderName = folderName;
       this.$store.commit('switchFolder', { folderName })
     },
-    addTodo() {
-      let text = this.inputText.replace(/^\s+|\s+$/, " ");
-      if (!text) {
+    addTask() {
+      let title = this.inputText.replace(/^\s+|\s+$/, " ");
+      if (!title) {
         return;
       }
-      if (this.addType == 'todo') {
-        let name = this.folderName || 'default';
-        this.$store.commit('addTodo', { name, text })
+      console.log('input');
+      console.log(title);
+      console.log(this.addType);
+      if (this.addType == 'task') {
+        let folderName = this.folderName || 'default';
+        // let data = {folderName:name,title:title};
+        this.$store.commit('addTask', {folderName:folderName,title:title})
       } else if (this.addType == 'folder') {
         this.$store.commit('addFolder', text )
       }
@@ -258,12 +262,12 @@ export default {
     position: relative;
     background-color:#fff;
   }
-  .todo-list {
+  .task-list {
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .todo-list li {
+  .task-list li {
     position: relative;
     font-size: 24px;
     border-bottom: 1px solid #ededed;

@@ -1,11 +1,11 @@
 <template>
-  <li class="todo" :class="{ completed: todo.done }">
+  <li class="task" :class="{ completed: task.done }">
     <div class="view">
       <input class="toggle"
              type="checkbox"
-             :checked="todo.done"
-             @change="toggleTask(todo)">
-      <label v-text="todo.text" @click="detail(todo)"></label>
+             :checked="task.done"
+             @change="toggleTask(task)">
+      <label v-text="task.title" @click="detail(task)"></label>
     </div>
   </li>
 </template>
@@ -13,14 +13,14 @@
 <script>
   import { mapMutations } from 'vuex'
   export default {
-    name: "Todo",
-    props:['todo', 'folderName'],
+    name: "Task",
+    props:['task', 'folderName'],
     methods:{
       ...mapMutations([
         'toggleTask'
       ]),
-      detail(todo) {
-        this.$router.push({name:'Detail', query:{folderName:todo.folderName,taskIndex:todo.taskIndex}})
+      detail(task) {
+        this.$router.push({name:'Detail', query:{folderName:task.folderName,taskIndex:task.taskIndex}})
       }
     }
   }
