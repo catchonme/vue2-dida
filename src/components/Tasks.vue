@@ -103,7 +103,8 @@ export default {
     }
   },
   mounted(){
-    this.$store.dispatch('getAllFolders');
+    let folderName = this.$route.query.folderName || 'default';
+    this.$store.dispatch('getAllFolders', {folderName});
   },
   computed: {
     ...mapGetters([
@@ -192,20 +193,19 @@ export default {
     },
     chooseFolder(folderName) {
       this.folderName = folderName;
+      this.$route.query.folderName = folderName;
+      console.log(this.$route.query.folderName);
       this.$store.commit('switchFolder', { folderName })
     },
     addTask() {
-      let title = this.inputText.replace(/^\s+|\s+$/, " ");
-      if (!title) {
+      let text = this.inputText.replace(/^\s+|\s+$/, " ");
+      if (!text) {
         return;
       }
-      console.log('input');
-      console.log(title);
-      console.log(this.addType);
       if (this.addType == 'task') {
         let folderName = this.folderName || 'default';
         // let data = {folderName:name,title:title};
-        this.$store.commit('addTask', {folderName:folderName,title:title})
+        this.$store.commit('addTask', {folderName:folderName,title:text})
       } else if (this.addType == 'folder') {
         this.$store.commit('addFolder', text )
       }

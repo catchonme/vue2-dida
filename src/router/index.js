@@ -18,12 +18,12 @@ export default new Router({
       component:Tasks
     },
     {
-      path:'/Search',
+      path:'/search',
       name:'Search',
       component:Search
     },
     {
-      path:'/Detail',
+      path:'/detail',
       name:'Detail',
       component:Detail
     }

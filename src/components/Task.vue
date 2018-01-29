@@ -20,7 +20,8 @@
         'toggleTask'
       ]),
       detail(task) {
-        this.$router.push({name:'Detail', query:{folderName:task.folderName,taskIndex:task.taskIndex}})
+        let origin = this.$router.history.current.name;
+        this.$router.push({name:'Detail', query:{folderName:task.folderName,taskIndex:task.taskIndex,origin:origin}})
       }
     }
   }

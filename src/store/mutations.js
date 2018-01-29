@@ -20,7 +20,7 @@ export const state = {
 }
 
 export const actions = {
-  getAllFolders ({commit}) {
+  getAllFolders ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
     var folders = getStore(STORAGE_KEY);
     var config = getStore(CONFIG_KEY);
@@ -30,7 +30,7 @@ export const actions = {
       folders = getStore(STORAGE_KEY);
       config = getStore(CONFIG_KEY);
     }
-    commit('getAllFolders', { folders, config});
+    commit('getAllFolders', { folders, config, folderName});
   },
   getSearchHistory ({ commit }) {
     var searchHistory = getStore(SEARCH_HISTORY_KEY);
@@ -58,9 +58,12 @@ export const getters = {
 }
 
 export const mutations = {
-  getAllFolders (state, { folders, config}) {
+  getAllFolders (state, { folders, config, folderName}) {
+    // let name = folderName || 'default';
+    console.log(folderName)
     state.folders = folders;
-    let folder = state.folders.find(folder => folder.name === 'default'); // 刚登录显式默认文件夹的任务
+    console.log(folders);
+    let folder = state.folders.find(folder => folder.name == folderName); // 刚登录显式默认文件夹的任务
     let tasks = folder.tasks;
     let stateTasks = [];
     tasks.forEach(function(task, index){
@@ -100,9 +103,9 @@ export const mutations = {
   },
 
   // name 是文件夹的名称
-  addTask (state, data) {
-    let folderName = data.folderName;
-    let title = data.title;
+  addTask (state, {folderName, title}) {
+    /*let folderName = data.folderName;
+    let title = data.title;*/
     let folders = state.folders;
     let folder = state.folders.find(folder => folder.name === folderName);
     if (!folder) {

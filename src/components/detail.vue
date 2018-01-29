@@ -5,15 +5,8 @@
     <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>
   </mu-appbar>
   <section class="main">
-    <!--<div class="view">
-      <input class="toggle"
-             type="checkbox">
-             &lt;!&ndash;:checked="todo.done"&ndash;&gt;
-             &lt;!&ndash;@change="toggleTask(todo)">&ndash;&gt;
-      &lt;!&ndash;<label v-text="todo.text"></label>&ndash;&gt;
-    </div>-->
     <form class="detail-form">
-      <input class="title" type="text" placeholder="准备做什么" v-model="detail.title" @change="editTitle">
+      <input class="title" type="text" placeholder="准备做什么" v-model="detail.title">
       <div class="content" id="content" contenteditable="true" v-model="detail.content">{{detail.content}}</div>
     </form>
   </section>
@@ -30,14 +23,14 @@
       }
     },
     created(){
-      this.$store.dispatch('getAllFolders');
       let folderName = this.$route.query.folderName;
       let taskIndex = this.$route.query.taskIndex;
+      this.$store.dispatch('getAllFolders',{folderName});
       this.$store.commit('getTaskDetail',{folderName, taskIndex});
       this.detail = this.$store.state.detail;
     },
     computed:{
-      // detail:state => state.detail,
+
     },
     methods:{
       ...mapMutations([
@@ -47,16 +40,18 @@
       openBottomSheet() {
 
       },
-      editTitle(val){
-        console.log(this.detail.title);
-      },
       back(){
         let content = document.getElementById("content").innerText;
         let title = this.detail.title;
         let folderName = this.$route.query.folderName;
         let taskIndex = this.$route.query.taskIndex;
         this.editTask({folderName, taskIndex, title, content});
-        this.$router.go(-1);
+        let origin = this.$route.query.origin;
+        if (origin == 'Tasks') {
+          this.$router.push({name:'Tasks',query:{folderName:folderName}});
+        } else if (origin = 'Search') {
+          this.$router.go(-1);
+        }
       }
     }
   }
@@ -65,8 +60,6 @@
 <style lang="scss" scoped>
   .main {
     background-color:#fff;
-    /*width:100%;*/
-    /*margin:0 auto;*/
   }
   .detail-form{
     display:flex;

@@ -42,7 +42,8 @@
     },
     created() {
       this.$store.dispatch('getSearchHistory');
-      this.$store.dispatch('getAllFolders');
+      let folderName = 'default';
+      this.$store.dispatch('getAllFolders',{folderName});
     },
     computed: {
       searchHistory(){
@@ -64,9 +65,6 @@
         'clearSearchHistory',
         'toggleTask'
       ]),
-      detaill() {
-        console.log('detail');
-      },
       check(item){
         console.log(item);
       },
@@ -192,8 +190,8 @@
     li {
       /*margin-left:100px;*/
       margin:0 auto;
-      height:3em;
-      line-height:3em;
+      /*height:3em;
+      line-height:3em;*/
       .task-title {
         margin-left:20px;
         margin-top:-20px;
