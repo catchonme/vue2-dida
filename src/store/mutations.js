@@ -71,8 +71,6 @@ export const mutations = {
   },*/
 
   getAllFolders (state, { folders, config}) {
-    console.log('--------config----');
-    console.log(config);
     state.folders = folders;
     let folder = state.folders.find(val => val.name === 'default'); // 刚登录显式默认文件夹的todo
     let todos = folder.todos;

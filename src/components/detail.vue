@@ -13,8 +13,8 @@
       &lt;!&ndash;<label v-text="todo.text"></label>&ndash;&gt;
     </div>-->
     <form class="detail-form">
-      <input class="title" type="text" placeholder="标题" >
-      <div class="content" contenteditable="true">she</div>
+      <input class="title" type="text" placeholder="准备做什么" :value="detail.title" @change="editTitle">
+      <div class="content" contenteditable="true">{{detail.content}}</div>
     </form>
   </section>
 </div>
@@ -25,26 +25,20 @@
   export default {
     data(){
       return{
-
+        folderName:this.$route.query.folderName,
+        taskIndex:this.$route.query.taskIndex,
+        detail:{}
       }
     },
-    mounted(){
-      /*mountedTask:function(){
-        let query = this.$router.query;
-        console.log(query);return;
-      }*/
+    created(){
+      this.$store.dispatch('getAllFolders');
+      let folderName = this.$route.query.folderName;
+      let taskIndex = this.$route.query.taskIndex;
+      this.$store.commit('getTaskDetail',{folderName, taskIndex});
+      this.detail = this.$store.state.detail;
     },
     computed:{
-      /*task:function(){
-        let query = this.$router.query;
-        console.log(query);
-        let folderName = query.folderName;
-        let taskIndex = query.taskIndex;
-        // let task =  this.$store.commit('getTaskDetail', { folderName , taskIndex})
-        let task = this.getTaskDetail(folderName, taskIndex);
-        console.log(task);
-        return task;
-      },*/
+      // detail:state => state.detail,
     },
     methods:{
       ...mapMutations([
@@ -52,6 +46,9 @@
       ]),
       openBottomSheet() {
 
+      },
+      editTitle(){
+        console.log(this.detail);
       },
       back(){
         // console.log(this.mountedTask);

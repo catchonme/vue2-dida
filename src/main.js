@@ -12,11 +12,11 @@ import '../src/style/common.scss'
 import './config/rem'
 import FaskClick from 'fastclick'
 
-if ('addEventListener' in document) {
+/*if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function(){
     FastClick.attach(document.body);
   }, false);
-}
+}*/
 
 Vue.use(MuseUI)
 
