@@ -61,7 +61,7 @@
         </div>
         <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="showAddTask"/>
         <mu-dialog :open="dialogShow" @close="close">
-          <mu-text-field :hintText="hintText" class="demo-divider-form" v-model="inputText" :underlineShow="true" @keyup.enter="addTask"/>
+          <mu-text-field v-focus :hintText="hintText" class="demo-divider-form" v-model="inputText" :underlineShow="true" @keyup.enter="addTask"/>
           <div class="icon-container">
             <mu-icon-button icon="send" size="12" class="send-right" @click="addTask"/>
           </div>
@@ -100,6 +100,13 @@ export default {
       inputText:'',
       hintText:'',
       addType:''
+    }
+  },
+  directives:{
+    focus:{
+      inserted:function(el){
+        el.focus();
+      }
     }
   },
   mounted(){

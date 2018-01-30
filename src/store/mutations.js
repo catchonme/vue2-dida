@@ -60,13 +60,16 @@ export const getters = {
 export const mutations = {
   getAllFolders (state, { folders, config, folderName}) {
     // let name = folderName || 'default';
-    console.log(folderName)
     state.folders = folders;
-    console.log(folders);
-    let folder = state.folders.find(folder => folder.name == folderName); // 刚登录显式默认文件夹的任务
+    let folder = state.folders.find(folder => folder.name == folderName);
     let tasks = folder.tasks;
+    console.log('init');
+    console.log(folderName);
+    console.log(folders);
     let stateTasks = [];
     tasks.forEach(function(task, index){
+      console.log('done is lost');
+      console.log(task);
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
     })
     state.tasks = stateTasks;
@@ -164,12 +167,19 @@ export const mutations = {
     setStore(STORAGE_KEY, folders);
   },
 
-  deleteTask( state, { task } ) {
-    state.tasks.splice(state.tasks.indexOf(task), 1)
-    // setStore(STORAGE_KEY, state.folders);
+  deleteTask( state, { folderName, taskIndex } ) {
+    let folders = state.folders;
+    folders.forEach(function(folder){
+      if (folder.name == folderName) {
+        folder.tasks.splice(taskIndex, 1);
+      }
+    })
+    state.folders = folders;
+    setStore(STORAGE_KEY, state.folders);
   },
 
   editTask (state, { folderName, taskIndex, title, content  }) {
+    console.log(title);
     let folders = state.folders;
     folders.forEach(function(folder) {
       if (folder.name == folderName) {
@@ -178,6 +188,26 @@ export const mutations = {
       }
     });
     setStore(STORAGE_KEY, folders);
+  },
+
+  moveToFolder(state, {oldFolderName, oldTaskIndex, newFolderName}) {
+    let folders = state.folders;
+    let task = {};
+    folders.forEach(function(folder) {
+      if (folder.name == oldFolderName) {
+        task = folder.tasks[oldTaskIndex];
+        folder.tasks.splice(oldTaskIndex, 1);
+      }
+    });
+    folders.forEach(function(folder) {
+      if (folder.name == newFolderName) {
+        folder.tasks.push(task);
+      }
+    })
+    state.folders = folders;
+    console.log('result');
+    console.log(state.folders);return;
+    setStore(STORAGE_KEY, state.folders);
   },
 
   toggleAll (state, { done }) {
