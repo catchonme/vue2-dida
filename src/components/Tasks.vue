@@ -67,25 +67,18 @@
           </div>
         </mu-dialog>
       </section>
-      <section class="footer">
-        <mu-paper>
-          <mu-bottom-nav :value="bottomNav" @change="selectBottomNav">
-            <mu-bottom-nav-item value="tasks" title="任务" icon="check_box"/>
-            <mu-bottom-nav-item value="calendar" title="日历" icon="event"/>
-            <mu-bottom-nav-item value="settings" title="我" icon="account_box"/>
-          </mu-bottom-nav>
-        </mu-paper>
-      </section>
+      <footer-guide bottomNav="tasks"></footer-guide>
     </div>
   </div>
 </template>
 
 <script>
 import task from './task'
+import footerGuide from './footerGuide'
 import { mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
-  components: { task },
+  components: { task, footerGuide },
   name: 'tasks',
   data () {
     return {
@@ -163,14 +156,6 @@ export default {
       var sort = val.value;
       console.log(sort);
       this.showSortSheet = false;
-    },
-    selectBottomNav(val) {
-      this.bottomNav = val;
-      switch (val) {
-        case 'tasks': this.$router.push('./tasks');break;
-        case 'calendar': this.$router.push('./search'); break;
-        case 'settings': this.$router.push('./profile');break;
-      }
     },
     closeSortSheet() {
       this.showSortSheet = false;
@@ -292,16 +277,9 @@ export default {
     position: absolute;
     right:0;
   }
-.footer {
-  position: fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:100;
-}
-.float-add-button {
-  position: fixed;
-  right:20px;
-  bottom:80px;
-}
+  .float-add-button {
+    position: fixed;
+    right:20px;
+    bottom:80px;
+  }
 </style>

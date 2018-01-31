@@ -1,6 +1,8 @@
 <template>
   <div>
-    <mu-appbar title="设置" class="title"></mu-appbar>
+    <mu-appbar>
+      <mu-icon value="chevron_left" slot="left" @click="back" :size="30"/>
+    </mu-appbar>
     <section>
       <section class="profile">
         <router-link :to="userInfo && userInfo.user_id ? '/profile/info' : '/login'" class="profile-link">
@@ -39,6 +41,7 @@
         </mu-bottom-nav>
       </mu-paper>
     </section>
+    <footer-guide bottomNav="settings"></footer-guide>
     <transition name="router-slide" mode="out-in">
       <router-view></router-view>
     </transition>
@@ -46,8 +49,10 @@
 </template>
 
 <script>
+  import footerGuide from './footerGuide'
   import { mapState } from 'vuex'
   export default {
+    components:{ footerGuide },
     data() {
       return{
         userInfo:{user_id:'123',avatar:'123'},
@@ -56,7 +61,6 @@
         completedNum:0,
         unCompletedNum:0,
         overdueNum:0,
-        bottomNav:'settings',
       }
     },
     computed:{
@@ -83,13 +87,8 @@
       this.overdueNum = overdueNum;
     },
     methods:{
-      selectBottomNav(val) {
-        this.bottomNav = val;
-        switch (val) {
-          case 'tasks': this.$router.push('/tasks');break;
-          case 'calendar': this.$router.push('/search'); break;
-          case 'settings': this.$router.push('/profile');break;
-        }
+      back(){
+        this.$router.go(-1);
       },
     }
   }
