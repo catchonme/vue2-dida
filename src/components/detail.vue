@@ -1,5 +1,5 @@
 <template>
-<div style="background: #fff">
+<div>
   <mu-appbar>
     <mu-icon-button icon="chevron_left" slot="left" @click="back"/>
     <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>

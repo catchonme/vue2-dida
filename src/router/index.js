@@ -1,8 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Tasks from '@/components/Tasks'
-import Search from '@/components/Search'
-import Detail from '@/components/Detail'
+import Tasks from '@/components/tasks'
+import Search from '@/components/search'
+import Detail from '@/components/detail'
+import Profile from '@/components/profile'
+import Info from '@/components/children/info'
+import changeUsername from '@/components/children/children/changeUsername'
+import changePassword from '@/components/children/children/changePassword'
 
 Vue.use(Router)
 
@@ -26,6 +30,24 @@ export default new Router({
       path:'/detail',
       name:'Detail',
       component:Detail
+    },{
+      path:'/profile',
+      name:'Profile',
+      component:Profile,
+      children:[{
+        path:'/info',
+        name:'Info',
+        component:Info,
+        children:[{
+          path:'changeUsername',
+          name:'changeUsername',
+          component:changeUsername
+        },{
+          path:'changePassword',
+          name:'changePassword',
+          component:changePassword
+        }]
+      }]
     }
   ]
 })

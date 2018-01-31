@@ -12,8 +12,8 @@
                   <p class="username">滴答用户</p>
                 </div>
                 <div class="right">
-                  <mu-icon value="search" @click="toSearch"/>
-                  <mu-icon value="mail" />
+                  <mu-icon value="search" @click="toSearch" color="white"/>
+                  <mu-icon value="mail" color="white"/>
                 </div>
               </div>
               <div class="left-main">
@@ -31,7 +31,7 @@
           <mu-bottom-sheet :open="bottomSheet" @close="closeBottomSheet">
             <mu-list @itemClick="chooseItem">
               <mu-list-item title="显示详情" value="showDetail"/>
-              <mu-list-item title="显示已完成" value="showCompleted"/>
+              <mu-list-item :title="showCompleted ? '隐藏已完成' : '显式已完成'" value="showCompleted"/>
               <mu-list-item title="排序" value="showSort"/>
               <mu-list-item title="编辑多个任务" value="editMultiTasks"/>
             </mu-list>
@@ -72,7 +72,7 @@
           <mu-bottom-nav :value="bottomNav" @change="selectBottomNav">
             <mu-bottom-nav-item value="tasks" title="任务" icon="check_box"/>
             <mu-bottom-nav-item value="calendar" title="日历" icon="event"/>
-            <mu-bottom-nav-item value="settings" title="设置" icon="settings"/>
+            <mu-bottom-nav-item value="settings" title="我" icon="account_box"/>
           </mu-bottom-nav>
         </mu-paper>
       </section>
@@ -169,7 +169,7 @@ export default {
       switch (val) {
         case 'tasks': this.$router.push('./Tasks');break;
         case 'calendar': this.$router.push('./Search'); break;
-        case 'settings': this.$router.push('./Tasks');break;
+        case 'settings': this.$router.push('./Profile');break;
       }
     },
     closeSortSheet() {
@@ -236,6 +236,7 @@ export default {
     margin:10px 0 0 25px;
   }
   .username {
+    color:white;
     height:15px;
     line-height: 15px;
     font-size:.7rem;
@@ -246,7 +247,7 @@ export default {
   }
   .left-header {
     margin-top:-10px;
-    background: #FFCC99;
+    background: #6666CC;
   }
   .left-header:after{
     content:',';

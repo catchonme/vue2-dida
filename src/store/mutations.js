@@ -63,13 +63,8 @@ export const mutations = {
     state.folders = folders;
     let folder = state.folders.find(folder => folder.name == folderName);
     let tasks = folder.tasks;
-    console.log('init');
-    console.log(folderName);
-    console.log(folders);
     let stateTasks = [];
     tasks.forEach(function(task, index){
-      console.log('done is lost');
-      console.log(task);
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
     })
     state.tasks = stateTasks;
@@ -179,7 +174,6 @@ export const mutations = {
   },
 
   editTask (state, { folderName, taskIndex, title, content  }) {
-    console.log(title);
     let folders = state.folders;
     folders.forEach(function(folder) {
       if (folder.name == folderName) {
@@ -205,8 +199,6 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    console.log('result');
-    console.log(state.folders);return;
     setStore(STORAGE_KEY, state.folders);
   },
 
