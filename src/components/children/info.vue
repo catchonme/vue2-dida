@@ -24,8 +24,7 @@
       </router-link>
     </section>
     <section class="exit-login" @click="showConfirmExit = true">退出登录</section>
-    <!--<mu-raised-button label="dialog" @click="confirmExit(true)"/>-->
-    <mu-dialog :open="showConfirmExit" title="Dialog" @close="confirmExit(false)">
+    <mu-dialog :open="showConfirmExit" title="提示" @close="confirmExit(false)">
       确认退出？
       <mu-flat-button slot="actions" @click="confirmExit(false)" primary label="取消"/>
       <mu-flat-button slot="actions" primary @click="confirmExit(true)" label="确定"/>
