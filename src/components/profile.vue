@@ -10,7 +10,7 @@
           <mu-icon class="avatar" value="account_circle" color="white" :size="60"/>
           <div class="user-info">
             <p>{{username}}</p>
-            <p><mu-icon value="phone_iphone" color="white" class="phone-icon"/>{{mobile}}</p>
+            <p><mu-icon value="phone_iphone" color="white" class="phone-icon" :size="20"/><span>{{mobile}}</span></p>
           </div>
           <mu-icon value="keyboard_arrow_right" color="white" class="arrow-right" :size="30"/>
         </router-link>
@@ -32,15 +32,6 @@
         </ul>
       </section>
     </section>
-    <section class="footer">
-      <mu-paper>
-        <mu-bottom-nav :value="bottomNav" @change="selectBottomNav">
-          <mu-bottom-nav-item value="tasks" title="任务" icon="check_box"/>
-          <mu-bottom-nav-item value="calendar" title="日历" icon="event"/>
-          <mu-bottom-nav-item value="settings" title="我" icon="account_box"/>
-        </mu-bottom-nav>
-      </mu-paper>
-    </section>
     <footer-guide bottomNav="settings"></footer-guide>
     <transition name="router-slide" mode="out-in">
       <router-view></router-view>
@@ -57,7 +48,7 @@
       return{
         userInfo:{user_id:'123',avatar:'123'},
         username:'jack',
-        mobile:13545781245,
+        mobile:'暂无绑定手机号码',
         completedNum:0,
         unCompletedNum:0,
         overdueNum:0,
@@ -131,6 +122,10 @@
         }
         p:nth-of-type(1) {
           margin-left:.2rem;
+        }
+        p:nth-of-type(2) span{
+          color:#fff;
+          font-size:0.6rem;
         }
       }
     }

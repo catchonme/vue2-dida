@@ -11,7 +11,7 @@
         <input type="text" placeholder="请输入新密码" name="newPassword" v-model="newPassword">
       </section>
       <section class="input-container">
-        <input type="text" placeholder="请确认输入密码" name="confirmPassword" v-model="confirmPassword">
+        <input type="text" placeholder="请重新输入新密码" name="confirmPassword" v-model="confirmPassword">
       </section>
     </form>
     <div class="confirm-update" @click="confirmUpdate">确认修改</div>

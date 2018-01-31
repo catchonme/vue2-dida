@@ -16,7 +16,6 @@
     props:['bottomNav'],
     methods:{
       selectBottomNav(val) {
-        this.bottomNav = val;
         switch (val) {
           case 'tasks': this.$router.push('./tasks');break;
           case 'calendar': this.$router.push('./search'); break;

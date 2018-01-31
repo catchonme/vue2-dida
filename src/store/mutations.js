@@ -1,36 +1,44 @@
 import {getStore, setStore, removeStore} from '../config/utils'
 
+// 需要合并所有的存储，为一个，这样就不需要这么多的键值了
 export const STORAGE_KEY = 'tasks';
 export const SEARCH_HISTORY_KEY = 'tasks-search-history'
 export const CONFIG_KEY = 'tasks-config'
+export const USER_KEY = 'tasks-user'
 
+// 增加日期后，可能还需要增加日期是否过期的键值，这样才好判断，哪些已经过期了，还是直接根据时间对比？
 const defaultStorage = [
   {name:'default', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
   {name:'今天', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
   ]
-
 const defaultConfig = {showCompleted:false}
+const defaultUser = {username:'',password:'',phone:''}
 
+// 这些 state 是否也需要合并成一个？还是把整个 mutation 分开成多个
 export const state = {
   config:[],
   folders:[],
   tasks:[],
   searchHistory:[],
-  detail:{}
+  detail:{},
+  user:{}
 }
 
 export const actions = {
   getAllFolders ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
-    var folders = getStore(STORAGE_KEY);
-    var config = getStore(CONFIG_KEY);
+    let folders = getStore(STORAGE_KEY);
+    let config = getStore(CONFIG_KEY);
+    let user = getStore(USER_KEY);
     if (!folders) {
       setStore(STORAGE_KEY, defaultStorage);
       setStore(CONFIG_KEY, defaultConfig);
+      setStore(USER_KEY, defaultUser);
       folders = getStore(STORAGE_KEY);
       config = getStore(CONFIG_KEY);
+      user = getStore(USER_KEY);
     }
-    commit('getAllFolders', { folders, config, folderName});
+    commit('getAllFolders', { folders, config, user, folderName});
   },
   getSearchHistory ({ commit }) {
     var searchHistory = getStore(SEARCH_HISTORY_KEY);
@@ -58,7 +66,7 @@ export const getters = {
 }
 
 export const mutations = {
-  getAllFolders (state, { folders, config, folderName}) {
+  getAllFolders (state, { folders, config, user, folderName}) {
     // let name = folderName || 'default';
     state.folders = folders;
     let folder = state.folders.find(folder => folder.name == folderName);
@@ -69,6 +77,7 @@ export const mutations = {
     })
     state.tasks = stateTasks;
     state.config = config;
+    state.user = user;
   },
 
   getCurrentFolder(state, { folders }) {
@@ -219,5 +228,11 @@ export const mutations = {
   saveConfig(state, options) {
     state.config[options.name] = options.value;
     setStore(CONFIG_KEY, state.config);
+  },
+
+  login(state, {username, password}) {
+    state.user.username = username;
+    state.user.password = password;
+    setStore(USER_KEY,state.user);
   }
 }
