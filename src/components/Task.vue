@@ -13,7 +13,7 @@
 <script>
   import { mapMutations } from 'vuex'
   export default {
-    name: "Task",
+    name: "task",
     props:['task', 'folderName'],
     methods:{
       ...mapMutations([
@@ -21,7 +21,7 @@
       ]),
       detail(task) {
         let origin = this.$router.history.current.name;
-        this.$router.push({name:'Detail', query:{folderName:task.folderName,taskIndex:task.taskIndex,origin:origin}})
+        this.$router.push({name:'detail', query:{folderName:task.folderName,taskIndex:task.taskIndex,origin:origin}})
       }
     }
   }

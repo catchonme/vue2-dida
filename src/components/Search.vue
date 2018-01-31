@@ -27,11 +27,11 @@
 </template>
 
 <script>
-  import Task from './Task'
+  import task from './task'
   import { mapMutations } from 'vuex';
 
   export default {
-    components: { Task },
+    components: { task },
     data() {
       return {
         searchValue:'',

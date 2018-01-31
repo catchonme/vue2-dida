@@ -130,7 +130,7 @@
           let origin = this.$route.query.origin;
           this.moveToFolder({oldFolderName, oldTaskIndex, newFolderName});
           this.showFolderList = false;
-          this.$router.push({name:'Detail',query:{folderName:newFolderName,taskIndex:oldTaskIndex,origin:origin}});
+          this.$router.push({name:'detail',query:{folderName:newFolderName,taskIndex:oldTaskIndex,origin:origin}});
         }
       },
       back(){
@@ -140,9 +140,9 @@
         let taskIndex = this.$route.query.taskIndex;
         this.editTask({folderName, taskIndex, title, content});
         let origin = this.$route.query.origin;
-        if (origin == 'Tasks') {
-          this.$router.push({name:'Tasks',query:{folderName:folderName}});
-        } else if (origin = 'Search') {
+        if (origin == 'tasks') {
+          this.$router.push({name:'tasks',query:{folderName:folderName}});
+        } else if (origin = 'search') {
           this.$router.go(-1);
         }
       }

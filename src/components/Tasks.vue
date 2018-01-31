@@ -81,12 +81,12 @@
 </template>
 
 <script>
-import Task from './Task'
+import task from './task'
 import { mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
-  components: { Task },
-  name: 'Tasks',
+  components: { task },
+  name: 'tasks',
   data () {
     return {
       taskTitle: 'Welcome',
@@ -167,9 +167,9 @@ export default {
     selectBottomNav(val) {
       this.bottomNav = val;
       switch (val) {
-        case 'tasks': this.$router.push('./Tasks');break;
-        case 'calendar': this.$router.push('./Search'); break;
-        case 'settings': this.$router.push('./Profile');break;
+        case 'tasks': this.$router.push('./tasks');break;
+        case 'calendar': this.$router.push('./search'); break;
+        case 'settings': this.$router.push('./profile');break;
       }
     },
     closeSortSheet() {
@@ -221,7 +221,7 @@ export default {
       this.dialogShow = false
     },
     toSearch() {
-      this.$router.push('./Search')
+      this.$router.push('./search')
     }
   }
 }

@@ -86,9 +86,9 @@
       selectBottomNav(val) {
         this.bottomNav = val;
         switch (val) {
-          case 'tasks': this.$router.push('./Tasks');break;
-          case 'calendar': this.$router.push('./Search'); break;
-          case 'settings': this.$router.push('./Profile');break;
+          case 'tasks': this.$router.push('/tasks');break;
+          case 'calendar': this.$router.push('/search'); break;
+          case 'settings': this.$router.push('/profile');break;
         }
       },
     }
