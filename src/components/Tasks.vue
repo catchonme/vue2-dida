@@ -127,6 +127,8 @@ export default {
       username: state => state.user.username
     }),
     filteredTasks () {
+      console.log('task folders');
+      console.log(this.folders);
       return this.tasks.filter(task => !task.done)
     },
     completedTasks() {

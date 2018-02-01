@@ -35,7 +35,7 @@
   </mu-appbar>
   <section class="main">
     <form class="detail-form">
-      <input class="title" type="text" placeholder="准备做什么" v-model="detail.title">
+      <input class="title" id="title" type="text" placeholder="准备做什么" v-model="detail.title">
       <div class="content" id="content" contenteditable="true" v-model="detail.content">{{detail.content}}</div>
     </form>
   </section>
@@ -129,15 +129,24 @@
           let oldTaskIndex = this.$route.query.taskIndex;
           let origin = this.$route.query.origin;
           this.moveToFolder({oldFolderName, oldTaskIndex, newFolderName});
+          let folders = this.folders;
+          let newTaskIndex = 0;
+          folders.forEach(function(folder) {
+            if (folder.name == newFolderName) {
+              newTaskIndex = folder.tasks.length - 1;
+            }
+          })
           this.showFolderList = false;
-          this.$router.push({name:'detail',query:{folderName:newFolderName,taskIndex:oldTaskIndex,origin:origin}});
+          this.$router.push({name:'detail',query:{folderName:newFolderName,taskIndex:newTaskIndex,origin:origin}});
         }
       },
       back(){
         let content = document.getElementById("content").innerText;
-        let title = this.detail.title;
+        let title = document.getElementById("title").value;
         let folderName = this.$route.query.folderName;
         let taskIndex = this.$route.query.taskIndex;
+        console.log('back');
+        console.log(title);
         this.editTask({folderName, taskIndex, title, content});
         let origin = this.$route.query.origin;
         if (origin == 'tasks') {

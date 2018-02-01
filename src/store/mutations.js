@@ -188,14 +188,19 @@ export const mutations = {
   },
 
   editTask (state, { folderName, taskIndex, title, content  }) {
+    console.log('edit task');
+    console.log(title);
     let folders = state.folders;
+    console.log(folders);
     folders.forEach(function(folder) {
+      console.log(folder);
       if (folder.name == folderName) {
         folder.tasks[taskIndex].title = title;
         folder.tasks[taskIndex].content = content;
       }
     });
-    setStore(STORAGE_KEY, folders);
+    state.folders = folders;
+    setStore(STORAGE_KEY, state.folders);
   },
 
   moveToFolder(state, {oldFolderName, oldTaskIndex, newFolderName}) {
@@ -213,6 +218,8 @@ export const mutations = {
       }
     })
     state.folders = folders;
+    console.log('move folder');
+    console.log(state.folders);
     setStore(STORAGE_KEY, state.folders);
   },
 
