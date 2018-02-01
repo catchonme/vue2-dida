@@ -36,17 +36,36 @@
 </template>
 
 <script>
+  import { mapState,mapMutations } from 'vuex'
   export default {
     data(){
       return{
-        username:'jack',
+        // username:'',
         showConfirmExit:false
       }
     },
-    methods:{
-      confirmExit:function(val){
-        if (val) {
+    created() {
 
+    },
+    computed:{
+      ...mapState([
+        'user'
+      ]),
+      username:function(){
+        return  this.user.username;
+      }
+    },
+    created() {
+      // this.username = this.user.username;
+    },
+    methods:{
+      ...mapMutations([
+        'loginOut'
+      ]),
+      confirmExit:function(confirm){
+        if (confirm) {
+          this.loginOut();
+          this.$router.push('/login');
         } else {
           this.showConfirmExit = false;
         }

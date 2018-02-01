@@ -27,15 +27,20 @@ export const state = {
 export const actions = {
   getAllFolders ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
+    // setStore(USER_KEY, defaultUser);
     let folders = getStore(STORAGE_KEY);
     let config = getStore(CONFIG_KEY);
     let user = getStore(USER_KEY);
     if (!folders) {
       setStore(STORAGE_KEY, defaultStorage);
-      setStore(CONFIG_KEY, defaultConfig);
-      setStore(USER_KEY, defaultUser);
       folders = getStore(STORAGE_KEY);
+    }
+    if (!config) {
+      setStore(CONFIG_KEY, defaultConfig);
       config = getStore(CONFIG_KEY);
+    }
+    if (!user) {
+      setStore(USER_KEY, defaultUser);
       user = getStore(USER_KEY);
     }
     commit('getAllFolders', { folders, config, user, folderName});
@@ -78,6 +83,7 @@ export const mutations = {
     state.tasks = stateTasks;
     state.config = config;
     state.user = user;
+    console.log(state.user);
   },
 
   getCurrentFolder(state, { folders }) {
@@ -234,5 +240,25 @@ export const mutations = {
     state.user.username = username;
     state.user.password = password;
     setStore(USER_KEY,state.user);
+  },
+
+  loginOut(state) {
+    state.user = {};
+    setStore(USER_KEY, state.user);
+  },
+
+  changeUsername(state, { username }) {
+    let user = state.user;
+    user.username = username;
+    state.user = user;
+    setStore(USER_KEY, state.user);
+  },
+
+  // 密码还是要加密
+  changePassword(state, { password }) {
+    let user = state.user;
+    user.password = password;
+    state.user = user;
+    setStore(USER_KEY, state.user);
   }
 }

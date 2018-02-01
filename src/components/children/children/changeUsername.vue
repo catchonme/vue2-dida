@@ -14,11 +14,16 @@
       <section class="reset">
         <button :class="{'font-opacity':opacityall}" @click="resetName">确认修改</button>
       </section>
+      <mu-dialog :open="showConfirmUpdate" title="提示" @close="closeTips()">
+        修改成功
+        <mu-flat-button slot="actions" primary @click="closeTips()" label="确定"/>
+      </mu-dialog>
     </section>
   </div>
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
   export default {
     data() {
       return{
@@ -28,9 +33,13 @@
         inputValue:'',
         newusername:'',
         opacityall:false,
+        showConfirmUpdate:false,
       }
     },
     methods:{
+      ...mapMutations([
+        'changeUsername'
+      ]),
       back(){
         this.$router.go(-1);
       },
@@ -39,15 +48,26 @@
           this.warn = false;
           this.bordercolor = true;
           this.opacityall = false;
+          return false;
         } else {
           this.warn = true;
           this.bordercolor = false;
           this.opacityall = true;
+          return true;
         }
       },
       resetName() {
-        console.log(this.inputValue);
-        return;
+        let checkResult = this.inputListen();
+        if (checkResult) {
+          let username = this.inputValue;
+          this.changeUsername({username})
+          this.showConfirmUpdate = true;
+          this.inputValue = '';
+          // this.$router.go(-1);
+        }
+      },
+      closeTips() {
+        this.showConfirmUpdate = false;
       }
     }
   }

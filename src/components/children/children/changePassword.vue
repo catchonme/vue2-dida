@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  import { mapState, mapMutations } from 'vuex'
   export default {
     data() {
       return {
@@ -33,7 +34,15 @@
         tips:'',
       }
     },
+    computed:{
+      ...mapState([
+        'user'
+      ])
+    },
     methods:{
+      ...mapMutations([
+        'changePassword'
+      ]),
       confirmUpdate() {
         if (!this.oldPassword) {
           this.tips = '请输入旧密码';
@@ -52,8 +61,19 @@
           this.showConfirmUpdate = true;
           return;
         }
-        console.log(this.newPassWord);return;
-        // 修改密码
+        if (this.user.password != this.oldPassword) {
+          this.tips = '旧密码输入错误';
+          this.showConfirmUpdate = true;
+          return;
+        }
+        let password = this.newPassWord;
+        this.changePassword({password});
+        this.showConfirmUpdate = true;
+        this.tips = '修改成功';
+        this.oldPassword = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+        // this.$router.go(-1);
       },
       closeTips:function(){
         this.showConfirmUpdate = false;

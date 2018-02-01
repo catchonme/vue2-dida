@@ -5,11 +5,12 @@
     </mu-appbar>
     <section>
       <section class="profile">
-        <router-link :to="userInfo && userInfo.user_id ? '/profile/info' : '/login'" class="profile-link">
-          <!--<img :src="userInfo.avatar" class="avatar" v-if="userInfo && userInfo.user_id">-->
-          <mu-icon class="avatar" value="account_circle" color="white" :size="60"/>
+        <router-link :to="username ? '/profile/info' : '/login'" class="profile-link">
+          <img src="../images/uicon.jpg" class="avatar" v-if="username">
+          <mu-icon v-else class="avatar" value="account_circle" color="white" :size="60"/>
           <div class="user-info">
-            <p>{{username}}</p>
+            <p v-if="username">{{username}}</p>
+            <p v-else>登录/注册</p>
             <p><mu-icon value="phone_iphone" color="white" class="phone-icon" :size="20"/><span>{{mobile}}</span></p>
           </div>
           <mu-icon value="keyboard_arrow_right" color="white" class="arrow-right" :size="30"/>
@@ -46,8 +47,6 @@
     components:{ footerGuide },
     data() {
       return{
-        userInfo:{user_id:'123',avatar:'123'},
-        username:'jack',
         mobile:'暂无绑定手机号码',
         completedNum:0,
         unCompletedNum:0,
@@ -56,10 +55,18 @@
     },
     computed:{
       ...mapState([
-        'folders'
-      ])
+        'folders',
+        'user'
+      ]),
+      username: function(){
+        return this.user.username;
+      },
     },
     created(){
+      // 这两行测试使用
+      let folderName = 'default';
+      this.$store.dispatch('getAllFolders', { folderName });
+
       let folders = this.folders;
       let completedNum = 0;
       let unCompletedNum = 0;
@@ -76,6 +83,7 @@
       this.completedNum = completedNum;
       this.unCompletedNum = unCompletedNum;
       this.overdueNum = overdueNum;
+      console.log(this.user);
     },
     methods:{
       back(){
