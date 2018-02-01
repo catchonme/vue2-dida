@@ -115,22 +115,16 @@ export const mutations = {
   },
 
   // name 是文件夹的名称
-  addTask (state, {folderName, title}) {
-    /*let folderName = data.folderName;
-    let title = data.title;*/
+  addTask (state, {folderName, title, date}) {
     let folders = state.folders;
-    let folder = state.folders.find(folder => folder.name === folderName);
-    if (!folder) {
-      folders.push({name:name, tasks : [{title:title,content:'',done:false,priority:0,date:''}]});
-    } else {
-      folder.tasks.push({title:title,content:'',done:false,priority:0,date:''});
-    }
-    let tasks = folder.tasks;
+    let folder = folders.find(folder => folder.name == folderName);
+    folder.tasks.push({title:title,content:'',done:false,priority:0,date:date});
     let stateTasks = [];
-    tasks.forEach(function(task, index){
+    folder.tasks.forEach(function(task, index){
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
     })
     state.tasks = stateTasks;
+    state.folders = folders;
     setStore(STORAGE_KEY, folders);
   },
 
@@ -188,12 +182,8 @@ export const mutations = {
   },
 
   editTask (state, { folderName, taskIndex, title, content  }) {
-    console.log('edit task');
-    console.log(title);
     let folders = state.folders;
-    console.log(folders);
     folders.forEach(function(folder) {
-      console.log(folder);
       if (folder.name == folderName) {
         folder.tasks[taskIndex].title = title;
         folder.tasks[taskIndex].content = content;
@@ -218,8 +208,6 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    console.log('move folder');
-    console.log(state.folders);
     setStore(STORAGE_KEY, state.folders);
   },
 

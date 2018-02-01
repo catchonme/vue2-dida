@@ -70,10 +70,53 @@
         </div>
         <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="showAddTask"/>
         <mu-dialog :open="dialogShow" @close="close">
-          <mu-text-field v-focus :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTask"/>
+          <mu-text-field v-focus :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTaskFunc"/>
           <div class="icon-container">
-            <mu-icon-button icon="send" size="12" class="send-right" @click="addTask"/>
+            <div class="icon-left">
+              <mu-icon value="today" @click="chooseDate"/>
+              <mu-icon value="access_time" @click="chooseTime"/>
+              <mu-icon value="priority_high" @click="openChoosePriority(true)"/>
+              <div class="time-picker">
+                <mu-date-picker class="date" v-model="taskDate" :underlineShow="false"/>
+                <mu-time-picker class="time" format="24hr" v-model="taskTime" :underlineShow="false"/>
+                <mu-icon class="priority-icon" value="priority_high" color="red"/>
+              </div>
+            </div>
+            <div class="icon-right">
+              <mu-icon value="send" @click="addTaskFunc"/>
+            </div>
           </div>
+        </mu-dialog>
+        <mu-dialog :open="showChoosePriority" title="选择优先级" @close="openChoosePriority(false)">
+          <ul class="priority-list">
+            <li class="priority-item" @click="choosePriority(0)">
+              <mu-radio class="priority-radio" name="priority" nativeValue="3" labelRight/>
+              <mu-icon class="priority-icon" value="priority_high" color="red"/>
+              <mu-icon class="priority-icon" value="priority_high" color="red"/>
+              <mu-icon class="priority-icon" value="priority_high" color="red"/>
+              <span class="priority-span">高</span>
+            </li>
+            <li class="priority-item" @click="choosePriority(1)">
+              <mu-radio class="priority-radio" name="priority" nativeValue="2" labelRight/>
+              <mu-icon class="priority-icon" value="priority_high" color="orange"/>
+              <mu-icon class="priority-icon" value="priority_high" color="orange"/>
+              <span class="priority-span">中</span>
+            </li>
+            <li class="priority-item" @click="choosePriority(2)">
+              <mu-radio class="priority-radio" name="priority" nativeValue="1" labelRight/>
+              <mu-icon class="priority-icon" value="priority_high"  color="blue"/>
+              <span class="priority-span">低</span>
+            </li>
+            <li class="priority-item" @click="choosePriority(3)">
+              <mu-radio class="priority-radio" name="priority" nativeValue="0" labelRight/>
+              <mu-icon class="priority-icon" value="priority_high" color="gray"/>
+              <mu-icon class="priority-icon" value="priority_high" color="gray"/>
+              <mu-icon class="priority-icon" value="priority_high" color="gray"/>
+              <span class="priority-span">无</span>
+            </li>
+          </ul>
+          <mu-flat-button slot="actions" @click="openChoosePriority(false)" primary label="取消"/>
+          <mu-flat-button slot="actions" @click="openChoosePriority(false)" primary label="确定"/>
         </mu-dialog>
       </section>
       <footer-guide bottomNav="tasks"></footer-guide>
@@ -98,10 +141,14 @@ export default {
       dialogShow:false,
       showSortSheet:false,
       showLeftBar:false,
+      showChoosePriority:false,
       docked: false,
       inputText:'',
       hintText:'',
-      addType:''
+      addType:'',
+      taskDate:'',
+      taskTime:'',
+      priority:''
     }
   },
   directives:{
@@ -137,8 +184,40 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'saveConfig'
+      'saveConfig',
+      'addTask'
     ]),
+    choosePriority(num) {
+      let priorityRadio = document.querySelectorAll('.priority-radio input');
+      switch(num) {
+        case 0 :
+              {
+                priorityRadio[0].checked = true;
+                this.priority = 3;
+              }break;
+        case 1:
+              {
+                priorityRadio[1].checked = true;
+                this.priority = 2;
+              }break;
+        case 2:
+              {
+                priorityRadio[2].checked = true;
+                this.priority = 1;
+              }break;
+        case 3:
+              {
+                priorityRadio[3].checked = true;
+                this.priority = 0;
+              }break;
+      }
+    },
+    chooseDate() {
+      document.querySelector(".date input").click();
+    },
+    chooseTime() {
+      document.querySelector(".time input").click();
+    },
     openLeftBar(flag) {
       this.showLeftBar = !this.showLeftBar;
       this.docked = !flag
@@ -195,20 +274,31 @@ export default {
       this.addButtonShow = true;
       this.dialogShow = false
     },
+    openChoosePriority(bool) {
+      bool ? this.showChoosePriority = true : this.showChoosePriority = false;
+    },
     chooseFolder(folderName) {
       this.folderName = folderName;
       this.$route.query.folderName = folderName;
       this.$store.commit('switchFolder', { folderName })
     },
-    addTask() {
+    addTaskFunc() {
       let text = this.inputText.replace(/^\s+|\s+$/, " ");
       if (!text) {
         return;
       }
       if (this.addType == 'task') {
         let folderName = this.folderName || 'default';
-        // let data = {folderName:name,title:title};
-        this.$store.commit('addTask', {folderName:folderName,title:text})
+        let fullDate = this.taskDate + ' ' + this.taskTime
+        if (fullDate) {
+          var date = Date.parse(fullDate);
+        } else {
+          var date = '';
+        }
+        this.addTask({folderName:folderName, title:text, date:date});
+        this.taskDate = '';
+        this.taskTime = '';
+        // this.$store.commit('addTask', {folderName:folderName,title:text})
       } else if (this.addType == 'folder') {
         this.$store.commit('addFolder', text )
       }
@@ -223,7 +313,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .avatar {
     position: relative;
     width:60px;
@@ -284,7 +374,18 @@ export default {
     position: relative;
     height: 50px;
   }
-  .send-right {
+  .icon-left {
+    position: absolute;
+    left:0;
+  }
+  .date {
+    float:left;
+    width:100px;
+  }
+  .time {
+    width:50px;
+  }
+  .icon-right {
     position: absolute;
     right:0;
   }
@@ -292,5 +393,20 @@ export default {
     position: fixed;
     right:20px;
     bottom:80px;
+  }
+  .priority-list {
+    margin-left:1rem;
+  }
+  .priority-item {
+    height:1.5rem;
+    line-height:1.5rem;
+  }
+  .priority-icon {
+    margin:0 -0.8rem 0 0;
+  }
+  .priority-span {
+    margin-left:.8rem;
+    position: relative;
+    top:-.2rem;
   }
 </style>

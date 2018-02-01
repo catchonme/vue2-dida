@@ -63,18 +63,22 @@
       },
     },
     created(){
-      // 这两行测试使用
+      // 这两行测试使用，调试当前页面
       let folderName = 'default';
       this.$store.dispatch('getAllFolders', { folderName });
-
+      console.log(this.folders);
       let folders = this.folders;
       let completedNum = 0;
       let unCompletedNum = 0;
       let overdueNum = 0;
+      let timeNow = (new Date).getTime();
+      console.log(timeNow);
       folders.forEach(function(folder){
         folder.tasks.forEach(function(task){
           if (task.done) {
             completedNum += 1;
+          } else if (task.date && task.date < timeNow){
+            overdueNum += 1;
           } else {
             unCompletedNum += 1;
           }
@@ -83,7 +87,6 @@
       this.completedNum = completedNum;
       this.unCompletedNum = unCompletedNum;
       this.overdueNum = overdueNum;
-      console.log(this.user);
     },
     methods:{
       back(){
