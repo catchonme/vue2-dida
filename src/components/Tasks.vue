@@ -8,11 +8,17 @@
             <mu-list @itemClick="docked ? '' : openLeftBar()">
               <div class="left-header">
                 <div class="left">
-                  <img src="../images/uicon.jpg" class="avatar">
-                  <p class="username">滴答用户</p>
+                  <div v-if="username" @click="goto('/profile')">
+                    <img src="../images/uicon.jpg" class="avatar">
+                    <p class="username">{{username}}</p>
+                  </div>
+                  <div v-else @click="goto('/login')">
+                    <mu-icon class="avatar" value="account_circle" color="white" :size="60"/>
+                    <p class="username">登录/注册</p>
+                  </div>
                 </div>
                 <div class="right">
-                  <mu-icon value="search" @click="toSearch" color="white"/>
+                  <mu-icon value="search" @click="goto('/search')" color="white"/>
                   <mu-icon value="mail" color="white"/>
                 </div>
               </div>
@@ -114,7 +120,8 @@ export default {
     ...mapState({
       showCompleted: state => state.config.showCompleted,
       folders: state => state.folders,
-      tasks: state => state.tasks
+      tasks: state => state.tasks,
+      username: state => state.user.username
     }),
     filteredTasks () {
       return this.tasks.filter(task => !task.done)
@@ -186,7 +193,6 @@ export default {
     chooseFolder(folderName) {
       this.folderName = folderName;
       this.$route.query.folderName = folderName;
-      console.log(this.$route.query.folderName);
       this.$store.commit('switchFolder', { folderName })
     },
     addTask() {
@@ -205,8 +211,8 @@ export default {
       this.addButtonShow = true;
       this.dialogShow = false
     },
-    toSearch() {
-      this.$router.push('./search')
+    goto(url){
+      this.$router.push(url);
     }
   }
 }

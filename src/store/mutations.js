@@ -83,7 +83,6 @@ export const mutations = {
     state.tasks = stateTasks;
     state.config = config;
     state.user = user;
-    console.log(state.user);
   },
 
   getCurrentFolder(state, { folders }) {
