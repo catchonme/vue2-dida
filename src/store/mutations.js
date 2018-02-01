@@ -259,5 +259,27 @@ export const mutations = {
     user.password = password;
     state.user = user;
     setStore(USER_KEY, state.user);
+  },
+
+  editFolder(state, { oldFolderName, newFolderName }) {
+    let folders = state.folders;
+    folders.forEach(function(folder) {
+      if (folder.name == oldFolderName) {
+        folder.name = newFolderName;
+      }
+    })
+    state.folders = folders;
+    setStore(STORAGE_KEY, state.folders);
+  },
+
+  deleteFolder( state, { folderIndex }) {
+    let folders = state.folders;
+    folders.forEach(function(folder, index) {
+      if (index == folderIndex) {
+        folders.splice(folderIndex, 1);
+      }
+    })
+    state.folders = folders;
+    setStore(STORAGE_KEY, state.folders);
   }
 }

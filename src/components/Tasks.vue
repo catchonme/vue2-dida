@@ -30,6 +30,9 @@
                 <mu-list-item title="添加清单" @click="showAddFolder">
                   <mu-icon slot="left" value="add_circle"/>
                 </mu-list-item>
+                <mu-list-item title="管理清单" @click="goto('/folders')">
+                  <mu-icon slot="left" value="settings"/>
+                </mu-list-item>
               </div>
             </mu-list>
           </mu-drawer>
@@ -67,7 +70,7 @@
         </div>
         <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="showAddTask"/>
         <mu-dialog :open="dialogShow" @close="close">
-          <mu-text-field v-focus :hintText="hintText" class="demo-divider-form" v-model="inputText" :underlineShow="true" @keyup.enter="addTask"/>
+          <mu-text-field v-focus :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTask"/>
           <div class="icon-container">
             <mu-icon-button icon="send" size="12" class="send-right" @click="addTask"/>
           </div>

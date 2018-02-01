@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import tasks from '@/components/tasks'
 import search from '@/components/search'
+import folders from '@/components/folders'
 import login from '@/components/login'
 import detail from '@/components/detail'
 import profile from '@/components/profile'
@@ -26,7 +27,13 @@ export default new Router({
       path:'/search',
       name:'search',
       component:search
-    },{
+    },
+    {
+      path:'/folders',
+      name:'folders',
+      component:folders
+    },
+    {
       path:'/login',
       name:'login',
       component:login
