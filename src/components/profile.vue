@@ -18,15 +18,15 @@
       </section>
       <section class="data">
         <ul class="clear">
-          <router-link to="/completed" tag="li" class="data-link">
+          <router-link :to="{name:'taskCategory', query:{category:'completed'}}" tag="li" class="data-link">
             <span class="data-top"><b>{{completedNum}}</b></span>
             <span class="data-bottom">已完成</span>
           </router-link>
-          <router-link to="/uncompleted" tag="li" class="data-link">
+          <router-link :to="{name:'taskCategory', query:{category:'uncompleted'}}" tag="li" class="data-link">
             <span class="data-top"><b>{{unCompletedNum}}</b></span>
             <span class="data-bottom">未完成</span>
           </router-link>
-          <router-link to="/overdue" tag="li" class="data-link">
+          <router-link :to="{name:'taskCategory', query:{category:'overdue'}}" tag="li" class="data-link">
             <span class="data-top"><b>{{overdueNum}}</b></span>
             <span class="data-bottom">已过期</span>
           </router-link>
@@ -77,7 +77,7 @@
         folder.tasks.forEach(function(task){
           if (task.done) {
             completedNum += 1;
-          } else if (task.date && task.date < timeNow){
+          } else if (!task.done && task.date && task.date < timeNow){
             overdueNum += 1;
           } else {
             unCompletedNum += 1;

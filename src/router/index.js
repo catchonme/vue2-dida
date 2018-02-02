@@ -7,6 +7,7 @@ import login from '@/components/login'
 import detail from '@/components/detail'
 import profile from '@/components/profile'
 import info from '@/components/children/info'
+import taskCategory from '@/components/children/taskCategory'
 import changeUsername from '@/components/children/children/changeUsername'
 import changePassword from '@/components/children/children/changePassword'
 
@@ -46,7 +47,13 @@ export default new Router({
       path:'/profile',
       name:'profile',
       component:profile,
-      children:[{
+      children:[
+        {
+          path:'taskCategory',
+          name:'taskCategory',
+          component:taskCategory
+        },
+        {
         path:'info',
         name:'info',
         component:info,

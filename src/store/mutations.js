@@ -121,7 +121,7 @@ export const mutations = {
     folder.tasks.push({title:title,content:'',done:false,priority:priority,date:date});
     let stateTasks = [];
     folder.tasks.forEach(function(task, index){
-      stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
+      stateTasks.push({taskIndex:index, title:task.title, done:task.done, date:task.date, folderName:folder.name})
     })
     state.tasks = stateTasks;
     state.folders = folders;

@@ -17,9 +17,9 @@
     methods:{
       selectBottomNav(val) {
         switch (val) {
-          case 'tasks': this.$router.push('./tasks');break;
-          case 'calendar': this.$router.push('./search'); break;
-          case 'settings': this.$router.push('./profile');break;
+          case 'tasks': this.$router.push('/tasks');break;
+          case 'calendar': this.$router.push('/search'); break;
+          case 'settings': this.$router.push('/profile');break;
         }
       },
     }
