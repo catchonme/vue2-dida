@@ -115,10 +115,10 @@ export const mutations = {
   },
 
   // name 是文件夹的名称
-  addTask (state, {folderName, title, date}) {
+  addTask (state, {folderName, title, date, priority}) {
     let folders = state.folders;
     let folder = folders.find(folder => folder.name == folderName);
-    folder.tasks.push({title:title,content:'',done:false,priority:0,date:date});
+    folder.tasks.push({title:title,content:'',done:false,priority:priority,date:date});
     let stateTasks = [];
     folder.tasks.forEach(function(task, index){
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})

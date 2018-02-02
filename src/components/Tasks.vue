@@ -79,7 +79,7 @@
               <div class="time-picker">
                 <mu-date-picker class="date" v-model="taskDate" :underlineShow="false"/>
                 <mu-time-picker class="time" format="24hr" v-model="taskTime" :underlineShow="false"/>
-                <mu-icon class="priority-icon" value="priority_high" color="red"/>
+                <mu-icon v-for="(item, index) in priority" :key="index" class="choose-priority" value="priority_high" :color="priorityColor"/>
               </div>
             </div>
             <div class="icon-right">
@@ -148,7 +148,8 @@ export default {
       addType:'',
       taskDate:'',
       taskTime:'',
-      priority:''
+      priority:0,
+      priorityColor:''
     }
   },
   directives:{
@@ -194,23 +195,28 @@ export default {
               {
                 priorityRadio[0].checked = true;
                 this.priority = 3;
+                this.priorityColor = 'red';
               }break;
         case 1:
               {
                 priorityRadio[1].checked = true;
                 this.priority = 2;
+                this.priorityColor = 'orange';
               }break;
         case 2:
               {
                 priorityRadio[2].checked = true;
                 this.priority = 1;
+                this.priorityColor = 'blue';
               }break;
         case 3:
               {
                 priorityRadio[3].checked = true;
                 this.priority = 0;
+                this.priorityColor = 'gray';
               }break;
       }
+      console.log(this.priority);
     },
     chooseDate() {
       document.querySelector(".date input").click();
@@ -260,6 +266,7 @@ export default {
       this.addType = 'task';
       this.addButtonShow = false;
       this.dialogShow = true;
+      this.priority = 0;
     },
     showAddFolder() {
       this.hintText = '输入清单名称';
@@ -276,6 +283,30 @@ export default {
     },
     openChoosePriority(bool) {
       bool ? this.showChoosePriority = true : this.showChoosePriority = false;
+      if (bool) {
+        let priority = this.priority;
+        let priorityRadio = document.querySelectorAll('.priority-radio input');
+        console.log(priorityRadio);return;
+      }
+
+      /*switch (priority) {
+        case 0 :
+          {
+            priorityRadio[0].checked = true;
+          }break;
+        case 1:
+          {
+            priorityRadio[1].checked = true;
+          }break;
+        case 2:
+          {
+            priorityRadio[2].checked = true;
+          }break;
+        case 3:
+          {
+            priorityRadio[3].checked = true;
+          }break;
+      }*/
     },
     chooseFolder(folderName) {
       this.folderName = folderName;
@@ -295,7 +326,8 @@ export default {
         } else {
           var date = '';
         }
-        this.addTask({folderName:folderName, title:text, date:date});
+        let priority = this.priority;
+        this.addTask({folderName:folderName, title:text, date:date,priority:priority});
         this.taskDate = '';
         this.taskTime = '';
         // this.$store.commit('addTask', {folderName:folderName,title:text})
@@ -378,12 +410,25 @@ export default {
     position: absolute;
     left:0;
   }
+  .time-picker{
+    position: relative;
+  }
   .date {
     float:left;
     width:100px;
   }
   .time {
     width:50px;
+  }
+  .choose-priority {
+    /*position: absolute;*/
+    /*left:7rem;*/
+    /*top:0.3rem;*/
+    margin:0 -0.7rem 0 0;
+    /*padding-top:0.2rem;*/
+  }
+  .no-priority {
+    top:-.2rem;
   }
   .icon-right {
     position: absolute;
