@@ -72,7 +72,7 @@
         <mu-dialog :open="dialogShow" @close="close">
           <mu-text-field v-focus :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTaskFunc"/>
           <div class="icon-container">
-            <div class="icon-left">
+            <div class="icon-left" v-if="addType == 'task'">
               <mu-icon value="today" @click="chooseDate"/>
               <mu-icon value="access_time" @click="chooseTime"/>
               <mu-icon value="priority_high" @click="openChoosePriority(true)"/>
