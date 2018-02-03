@@ -95,10 +95,11 @@ export const mutations = {
   getTaskDetail(state, {folderName, taskIndex}) {
     let folders = state.folders;
     let detail = {};
+    console.log(folders);
     folders.forEach(function(folder) {
       if (folder.name == folderName) {
         let task = folder.tasks[taskIndex];
-        detail = {taskIndex:taskIndex, title:task.title, content:task.content, done:task.done,date:task.date, folderName:folderName}
+        detail = {taskIndex:taskIndex, title:task.title, content:task.content, done:task.done,date:task.date, priority:task.priority, folderName:folderName}
       }
     })
     state.detail = detail;
@@ -181,12 +182,15 @@ export const mutations = {
     setStore(STORAGE_KEY, state.folders);
   },
 
-  editTask (state, { folderName, taskIndex, title, content  }) {
+  editTask (state, { folderName, taskIndex, title, content, done, date, priority }) {
     let folders = state.folders;
     folders.forEach(function(folder) {
       if (folder.name == folderName) {
         folder.tasks[taskIndex].title = title;
         folder.tasks[taskIndex].content = content;
+        folder.tasks[taskIndex].done = done;
+        folder.tasks[taskIndex].date = date;
+        folder.tasks[taskIndex].priority = priority;
       }
     });
     state.folders = folders;

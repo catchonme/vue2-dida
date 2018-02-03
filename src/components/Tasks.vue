@@ -79,7 +79,7 @@
               <div class="time-picker">
                 <mu-date-picker class="date" v-model="taskDate" :underlineShow="false"/>
                 <mu-time-picker class="time" format="24hr" v-model="taskTime" :underlineShow="false"/>
-                <mu-icon v-for="(item, index) in priority" :key="index" class="choose-priority" value="priority_high" :color="priorityColor"/>
+                <mu-icon v-for="(item, index) in priority" :key="index" class="choose-priority" value="priority_high" :color="priorityColor" @click="openChoosePriority(true)"/>
               </div>
             </div>
             <div class="icon-right">
@@ -90,25 +90,25 @@
         <mu-dialog :open="showChoosePriority" title="选择优先级" @close="openChoosePriority(false)">
           <ul class="priority-list">
             <li class="priority-item" @click="choosePriority(0)">
-              <mu-radio class="priority-radio" name="priority" nativeValue="3" labelRight/>
+              <mu-radio class="priority-radio" name="priority" nativeValue="3"/>
               <mu-icon class="priority-icon" value="priority_high" color="red"/>
               <mu-icon class="priority-icon" value="priority_high" color="red"/>
               <mu-icon class="priority-icon" value="priority_high" color="red"/>
               <span class="priority-span">高</span>
             </li>
             <li class="priority-item" @click="choosePriority(1)">
-              <mu-radio class="priority-radio" name="priority" nativeValue="2" labelRight/>
+              <mu-radio class="priority-radio" name="priority" nativeValue="2" />
               <mu-icon class="priority-icon" value="priority_high" color="orange"/>
               <mu-icon class="priority-icon" value="priority_high" color="orange"/>
               <span class="priority-span">中</span>
             </li>
             <li class="priority-item" @click="choosePriority(2)">
-              <mu-radio class="priority-radio" name="priority" nativeValue="1" labelRight/>
+              <mu-radio class="priority-radio" name="priority" nativeValue="1" />
               <mu-icon class="priority-icon" value="priority_high"  color="blue"/>
               <span class="priority-span">低</span>
             </li>
             <li class="priority-item" @click="choosePriority(3)">
-              <mu-radio class="priority-radio" name="priority" nativeValue="0" labelRight/>
+              <mu-radio class="priority-radio" name="priority" nativeValue="0"/>
               <mu-icon class="priority-icon" value="priority_high" color="gray"/>
               <mu-icon class="priority-icon" value="priority_high" color="gray"/>
               <mu-icon class="priority-icon" value="priority_high" color="gray"/>
@@ -267,6 +267,8 @@ export default {
       this.addButtonShow = false;
       this.dialogShow = true;
       this.priority = 0;
+      this.taskDate = '';
+      this.taskTime = '';
     },
     showAddFolder() {
       this.hintText = '输入清单名称';
@@ -414,16 +416,18 @@ export default {
     position: relative;
   }
   .date {
-    float:left;
+    /*float:left;*/
     width:100px;
+    overflow: hidden;
   }
   .time {
     width:50px;
+    overflow: hidden;
   }
   .choose-priority {
-    /*position: absolute;*/
+    position: relative;
     /*left:7rem;*/
-    /*top:0.3rem;*/
+    top:-1rem;
     margin:0 -0.7rem 0 0;
     /*padding-top:0.2rem;*/
   }

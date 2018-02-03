@@ -30,14 +30,54 @@
           </li>
         </ul>
       </form>
-      <mu-flat-button primary label="关闭" @click="changeFolder(false)" slot="actions"/>
+      <mu-flat-button primary label="取消" @click="changeFolder(false)" slot="actions"/>
     </mu-dialog>
   </mu-appbar>
   <section class="main">
     <form class="detail-form">
-      <input class="title" id="title" type="text" placeholder="准备做什么" v-model="detail.title">
-      <div class="content" id="content" contenteditable="true" v-model="detail.content">{{detail.content}}</div>
+      <div class="form-top">
+        <mu-checkbox class="checkbox" v-model="detailChecked"/>
+        <mu-date-picker :hintText="detailDate" class="date" v-model="detailDate" :underlineShow="false"/>
+        <mu-time-picker :hintText="detailTime" format="24hr" v-model="detailTime" class="time" :underlineShow="false"/>
+        <div class="priority">
+          <mu-icon v-show="priority > 0" v-for="(item, index) in priority" :key="index+4" class="choose-priority" value="priority_high" :color="priorityColor" @click="openChoosePriority(true)"/>
+          <mu-icon v-show="priority == 0" v-for="(item, index) in [1,2,3]" :key="index" class="priority-high" value="priority_high" color="gray" @click="openChoosePriority(true)"/>
+        </div>
+      </div>
+      <input class="title" id="title" type="text" placeholder="准备做什么" v-model="detailTitle">
+      <div class="content" id="content" contenteditable="true" v-model="detailContent">{{detailContent}}</div>
     </form>
+    <mu-dialog class="choose-priority-box" :open="showChoosePriority" title="选择优先级" @close="openChoosePriority(false)">
+      <ul class="priority-list">
+        <li class="priority-item" @click="choosePriority(0)">
+          <mu-radio class="priority-radio" name="priority" nativeValue="3"/>
+          <mu-icon class="priority-icon" value="priority_high" color="red"/>
+          <mu-icon class="priority-icon" value="priority_high" color="red"/>
+          <mu-icon class="priority-icon" value="priority_high" color="red"/>
+          <span class="priority-span">高</span>
+        </li>
+        <li class="priority-item" @click="choosePriority(1)">
+          <mu-radio class="priority-radio" name="priority" nativeValue="2" />
+          <mu-icon class="priority-icon" value="priority_high" color="orange"/>
+          <mu-icon class="priority-icon" value="priority_high" color="orange"/>
+          <span class="priority-span">中</span>
+        </li>
+        <li class="priority-item" @click="choosePriority(2)">
+          <mu-radio class="priority-radio" name="priority" nativeValue="1" />
+          <mu-icon class="priority-icon" value="priority_high"  color="blue"/>
+          <span class="priority-span">低</span>
+        </li>
+        <li class="priority-item" @click="choosePriority(3)">
+          <mu-radio class="priority-radio" name="priority" nativeValue="0" />
+          <mu-icon class="priority-icon" value="priority_high" color="gray"/>
+          <mu-icon class="priority-icon" value="priority_high" color="gray"/>
+          <mu-icon class="priority-icon" value="priority_high" color="gray"/>
+          <span class="priority-span">无</span>
+        </li>
+      </ul>
+      <mu-flat-button slot="actions" @click="openChoosePriority(false)" primary label="取消"/>
+      <mu-flat-button slot="actions" @click="openChoosePriority(false)" primary label="确定"/>
+    </mu-dialog>
   </section>
 </div>
 </template>
@@ -50,21 +90,53 @@
         folderName:'',
         taskIndex:'',
         detail:{},
+        detailTitle:'',
+        detailContent:'',
+        detailChecked:true,
+        detailDate:'设置日期',
+        detailTime:'设置时间',
         input:'',
         bottomSheet:false,
         showConfirmDelete:false,
         showFolderList:false,
-        folderName:''
+        folderName:'',
+        showChoosePriority:false,
+        priority:0,
+        priorityColor:"gray",
       }
     },
     created(){
       let folderName = this.$route.query.folderName;
-      console.log('init detail');
-      console.log(folderName);
       let taskIndex = this.$route.query.taskIndex;
       this.$store.dispatch('getAllFolders',{folderName});
       this.$store.commit('getTaskDetail',{folderName, taskIndex});
-      this.detail = this.$store.state.detail;
+      this.detailTitle = this.$store.state.detail.title;
+      this.detailContent = this.$store.state.detail.content;
+      this.detailChecked = this.$store.state.detail.done;
+      this.priority = this.$store.state.detail.priority;
+      switch (this.priority) {
+        case 0 : this.priorityColor = 'gray'; break;
+        case 1 : this.priorityColor = 'blue'; break;
+        case 2 : this.priorityColor = 'orange'; break;
+        case 3 : this.priorityColor = 'red'; break;
+      }
+      console.log(this.priority);
+      let datetime = this.$store.state.detail.date;
+      if (datetime) {
+        let dateArr = new Date(datetime).toLocaleDateString().split('/');
+        let timeArr = new Date(datetime).toTimeString().split(':');
+        let date = dateArr.map(function(val) {
+          if (val < 10) {
+             return '0' + val;
+          } else {
+            return val;
+          }
+        }).join('-');
+        let time = timeArr[0]+':'+timeArr[1];
+        this.detailDate = date;
+        this.detailTime = time;
+      }
+      console.log(this.detail);
     },
     computed:mapState({
       folders:state => state.folders,
@@ -88,6 +160,39 @@
         'deleteTask',
         'moveToFolder'
       ]),
+      openChoosePriority(bool) {
+        bool ? this.showChoosePriority = true : this.showChoosePriority = false;
+      },
+      choosePriority(num) {
+        let priorityRadio = document.querySelectorAll('.priority-radio input');
+        switch(num) {
+          case 0 :
+          {
+            priorityRadio[0].checked = true;
+            this.priority = 3;
+            this.priorityColor = 'red';
+          }break;
+          case 1:
+          {
+            priorityRadio[1].checked = true;
+            this.priority = 2;
+            this.priorityColor = 'orange';
+          }break;
+          case 2:
+          {
+            priorityRadio[2].checked = true;
+            this.priority = 1;
+            this.priorityColor = 'blue';
+          }break;
+          case 3:
+          {
+            priorityRadio[3].checked = true;
+            this.priority = 0;
+            this.priorityColor = 'gray';
+          }break;
+        }
+        console.log(this.priority);
+      },
       closeBottomSheet () {
         this.bottomSheet = false
       },
@@ -142,12 +247,18 @@
       },
       back(){
         let content = document.getElementById("content").innerText;
-        let title = document.getElementById("title").value;
+        let title = this.detailTitle;
         let folderName = this.$route.query.folderName;
         let taskIndex = this.$route.query.taskIndex;
-        console.log('back');
-        console.log(title);
-        this.editTask({folderName, taskIndex, title, content});
+        let done = this.detailChecked;
+        let priority = this.priority;
+        let fullDate = this.detailDate + ' ' + this.detailTime
+        if (fullDate) {
+          var date = Date.parse(fullDate);
+        } else {
+          var date = '';
+        }
+        this.editTask({folderName, taskIndex, title, content, done, date, priority});
         let origin = this.$route.query.origin;
         if (origin == 'tasks') {
           this.$router.push({name:'tasks',query:{folderName:folderName}});
@@ -213,10 +324,19 @@
     /*margin:0 auto;*/
     flex-direction: column;
     padding:.5rem;
+    .form-top{
+      flex:1;
+      /*line-height:1rem;*/
+      height:1.5rem;
+      position: relative;
+      border-bottom:1px solid #ccc;
+    }
     .title {
       flex:1;
       line-height:2rem;
       height:2rem;
+      position: relative;
+      /*top:0.2rem;*/
       border-bottom:1px solid #ccc;
     }
     .content {
@@ -225,7 +345,7 @@
       left:0;
       right:0;
       bottom:0;
-      top:5rem;
+      top:6.5rem;
       padding:0.8rem;
       /*width:100%;*/
       /*height:500px;*/
@@ -235,5 +355,64 @@
   .view {
     padding-left:20px;
   }
-
+  .priority-list {
+    margin-left:-1rem;
+  }
+  .priority-item {
+    height:1.5rem;
+    line-height:1.5rem;
+  }
+  .priority-radio {
+    float: left;
+    position: relative;
+    top:-0.22rem;
+    /*<!--left:-3rem;-->*/
+  }
+  .priority-icon {
+    margin:0 -0.8rem 0 0;
+  }
+  .priority-span {
+    margin-left:.8rem;
+    position: relative;
+    top:-.2rem;
+  }
+  /*.form-top {
+    position: relative;
+    height:1.5rem;
+    line-height:1.5rem;
+  }*/
+  .checkbox {
+    position: absolute;
+  }
+  .date {
+    position: absolute;
+    left:1.3rem;
+    top:-.4rem;
+    width:4.2rem;
+    /*border:1px solid orange;*/
+    overflow: hidden;
+  }
+  .time {
+    position: absolute;
+    left:5rem;
+    top:-.4rem;
+    width:3rem;
+    overflow: hidden;
+  }
+  .priority {
+    position: absolute;
+    right:1rem;
+  }
+  .priority-high {
+    margin:0 -0.7rem 0 0;
+  }
+  .choose-priority {
+    margin:0 -0.7rem 0 0;
+  }
+  .choose-priority-box:before {
+    display:block;
+    content:',';
+    overflow: hidden;
+    clear: both;
+  }
 </style>
