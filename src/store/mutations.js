@@ -22,22 +22,14 @@ export const state = {
 }
 
 export const actions = {
-  getAllFolders ({commit},{folderName}) {
+  initData ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
     let storage = getStore(STORAGE_KEY);
     if (!storage) {
       setStore(STORAGE_KEY, defaultStorage);
       storage = getStore(STORAGE_KEY);
     }
-    commit('getAllFolders', { storage, folderName});
-  },
-  getSearchHistory ({ commit }) {
-    let storage = getStore(STORAGE_KEY);
-    let searchHistory = storage.searchHistory;
-    if(!searchHistory) {
-      searchHistory = [];
-    }
-    commit('getSearchHistory',  searchHistory );
+    commit('initData', { storage, folderName});
   }
 }
 
@@ -58,7 +50,7 @@ export const getters = {
 }
 
 export const mutations = {
-  getAllFolders (state, { storage, folderName}) {
+  initData (state, { storage, folderName}) {
     state.folders = storage.folders;
     let folder = state.folders.find(folder => folder.name == folderName);
     let tasks = folder.tasks;
@@ -69,6 +61,7 @@ export const mutations = {
     state.tasks = stateTasks;
     state.config = storage.config;
     state.user = storage.user;
+    state.searchHistory = storage.searchHistory;
   },
 
   getCurrentFolder(state, { folders }) {
@@ -157,13 +150,13 @@ export const mutations = {
         folder.tasks[item.taskIndex].done = !folder.tasks[item.taskIndex].done;
       }
     })
-    state.folders = folders;
-    let folder = state.folders.find(folder => folder.name === item.folderName);
+    let folder = folders.find(folder => folder.name === item.folderName);
     let tasks = folder.tasks;
     let stateTasks = [];
     tasks.forEach(function(task, index){
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
     })
+    state.folders = folders;
     state.tasks = stateTasks;
     let storage = getStore(STORAGE_KEY);
     storage.folders = state.folders;

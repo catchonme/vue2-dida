@@ -44,11 +44,6 @@
         'user'
       ])
     },
-    // created 仅供测试，
-    created(){
-      let folderName = '默认';
-      this.$store.dispatch('getAllFolders', { folderName });
-    },
     methods:{
       ...mapMutations([
         'login'
@@ -60,7 +55,7 @@
         this.showLoginTip = false;
       },
       back(){
-        this.$router.push('./tasks');
+        this.$router.push('/profile');
       },
       userLogin() {
         if (!this.username) {
@@ -85,12 +80,12 @@
               this.tips = '密码错误';
               return;
             } else {
-              this.$router.push('./tasks');
+              this.$router.push('/tasks');
             }
           }
         } else {
           this.login({username, password});
-          this.$router.push('./tasks');
+          this.$router.push('/tasks');
         }
       }
     }

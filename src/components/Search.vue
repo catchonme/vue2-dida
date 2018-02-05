@@ -29,7 +29,7 @@
 
 <script>
   import task from './task'
-  import { mapMutations } from 'vuex';
+  import { mapState, mapMutations } from 'vuex';
   import footerGuider from './footerGuide'
   export default {
     components: { task, footerGuider },
@@ -41,18 +41,11 @@
         list:[]
       }
     },
-    created() {
-      this.$store.dispatch('getSearchHistory');
-      let folderName = '默认';
-      this.$store.dispatch('getAllFolders',{folderName});
-    },
     computed: {
-      searchHistory(){
-        return this.$store.state.searchHistory
-      },
-      folders() {
-        return this.$store.state.folders;
-      }
+      ...mapState([
+        'searchHistory',
+        'folders'
+      ]),
     },
     methods:{
       ...mapMutations([
@@ -79,6 +72,7 @@
         }
         let search = this.searchValue;
         let results = []
+        console.log(this.folders);
         this.folders.forEach(function(folder){
           folder.tasks.forEach(function(task, index){
             if (task.title.indexOf(search) > -1) {

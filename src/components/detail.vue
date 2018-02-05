@@ -110,7 +110,7 @@
     created(){
       let folderName = this.$route.query.folderName;
       let taskIndex = this.$route.query.taskIndex;
-      this.$store.dispatch('getAllFolders',{folderName});
+      this.$store.dispatch('initData',{folderName});
       this.$store.commit('getTaskDetail',{folderName, taskIndex});
       this.detailTitle = this.$store.state.detail.title;
       this.detailContent = this.$store.state.detail.content;
@@ -285,9 +285,6 @@
 </script>
 
 <style lang="scss" scoped>
-  /*.folder-list {
-    background: #f5f5f5;
-  },*/
   li .toggle {
     text-align: center;
     width: 20px;
@@ -307,10 +304,6 @@
   }
 
   li .toggle + label {
-    /*
-          Firefox requires `#` to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433
-          IE and Edge requires *everything* to be escaped to render, so we do that instead of just the `#` - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/
-      */
     background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
     background-size:30px 30px;
     background-repeat: no-repeat;
@@ -335,12 +328,10 @@
   }
   .detail-form{
     display:flex;
-    /*margin:0 auto;*/
     flex-direction: column;
     padding:.5rem;
     .form-top{
       flex:1;
-      /*line-height:1rem;*/
       height:1.5rem;
       position: relative;
       border-bottom:1px solid #ccc;
@@ -350,7 +341,6 @@
       line-height:2rem;
       height:2rem;
       position: relative;
-      /*top:0.2rem;*/
       border-bottom:1px solid #ccc;
     }
     .content {
@@ -361,8 +351,6 @@
       bottom:0;
       top:6.5rem;
       padding:0.8rem;
-      /*width:100%;*/
-      /*height:500px;*/
       background-color:#fff;
     }
   }
@@ -389,11 +377,6 @@
     position: relative;
     top:-.2rem;
   }
-  /*.form-top {
-    position: relative;
-    height:1.5rem;
-    line-height:1.5rem;
-  }*/
   .checkbox {
     position: absolute;
   }

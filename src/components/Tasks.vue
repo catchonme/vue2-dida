@@ -152,7 +152,7 @@ export default {
   },
   mounted(){
     let folderName = this.$route.query.folderName || '默认';
-    this.$store.dispatch('getAllFolders', {folderName});
+    this.$store.dispatch('initData', {folderName});
   },
   computed: {
     ...mapGetters([

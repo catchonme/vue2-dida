@@ -73,7 +73,6 @@
         this.oldPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';
-        // this.$router.go(-1);
       },
       closeTips:function(){
         this.showConfirmUpdate = false;
@@ -116,7 +115,6 @@
           border:1px;
           border-radius:.15rem;
         }
-
       }
     }
     .confirm-update {

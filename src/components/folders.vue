@@ -4,7 +4,7 @@
         <mu-icon value="chevron_left" slot="left" @click="back" :size="30"/>
       </mu-appbar>
       <section class="folders-box">
-        <mu-list-item v-for="(folder, index) in folderList" :title="folder" :key="index" @click="showOperateFolder(folder, index)">
+        <mu-list-item v-for="(folder, index) in folderList" :title="folder | ellipsis" :key="index" @click="showOperateFolder(folder, index)">
           <mu-icon slot="left" value="inbox"/>
         </mu-list-item>
         <mu-dialog :open="showOperate" @close="showOperateFolder(false)">
@@ -67,7 +67,6 @@
       },
       inputListen() {
         if (!this.inputValue) {
-          console.log('none');
           this.showEditButton = false;
         } else {
           this.showEditButton = true;
@@ -90,6 +89,11 @@
       },
       back() {
         this.$router.go(-1);
+      }
+    },
+    filters:{
+      ellipsis:function(n) {
+        return n.length < 10 ? n : n.substring(0,10)+'...';
       }
     }
   }

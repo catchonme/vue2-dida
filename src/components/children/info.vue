@@ -40,12 +40,8 @@
   export default {
     data(){
       return{
-        // username:'',
         showConfirmExit:false
       }
-    },
-    created() {
-
     },
     computed:{
       ...mapState([

@@ -48,9 +48,6 @@
     data() {
       return{
         mobile:'暂无绑定手机号码',
-        completedNum:0,
-        unCompletedNum:0,
-        overdueNum:0,
       }
     },
     computed:{
@@ -61,32 +58,44 @@
       username: function(){
         return this.user.username;
       },
-    },
-    created(){
-      // 这两行测试使用，调试当前页面
-      let folderName = '默认';
-      this.$store.dispatch('getAllFolders', { folderName });
-      console.log(this.folders);
-      let folders = this.folders;
-      let completedNum = 0;
-      let unCompletedNum = 0;
-      let overdueNum = 0;
-      let timeNow = (new Date).getTime();
-      console.log(timeNow);
-      folders.forEach(function(folder){
-        folder.tasks.forEach(function(task){
-          if (task.done) {
-            completedNum += 1;
-          } else if (!task.done && task.date && task.date < timeNow){
-            overdueNum += 1;
-          } else {
-            unCompletedNum += 1;
-          }
+      completedNum:function(){
+        let folders = this.folders;
+        let completedNum = 0;
+        folders.forEach(function(folder){
+          folder.tasks.forEach(function(task){
+            if (task.done) {
+              completedNum += 1;
+            }
+          })
         })
-      })
-      this.completedNum = completedNum;
-      this.unCompletedNum = unCompletedNum;
-      this.overdueNum = overdueNum;
+        return completedNum;
+      },
+      unCompletedNum:function(){
+        let folders = this.folders;
+        let timeNow = (new Date).getTime();
+        let unCompletedNum = 0;
+        folders.forEach(function(folder){
+          folder.tasks.forEach(function(task){
+            if (!task.done && ((task.date && task.date > timeNow) || (!task.date))){
+              unCompletedNum += 1;
+            }
+          })
+        })
+        return unCompletedNum;
+      },
+      overdueNum:function(){
+        let folders = this.folders;
+        let overdueNum = 0;
+        let timeNow = (new Date).getTime();
+        folders.forEach(function(folder){
+          folder.tasks.forEach(function(task){
+             if (!task.done && task.date && task.date < timeNow) {
+               overdueNum += 1;
+             }
+          })
+        })
+        return overdueNum;
+      }
     },
     methods:{
       back(){

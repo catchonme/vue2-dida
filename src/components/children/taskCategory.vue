@@ -18,11 +18,6 @@
   import { mapState } from 'vuex'
   export default {
     components:{task},
-    data() {
-      return {
-
-      }
-    },
     computed:{
       ...mapState([
         'folders'
@@ -70,7 +65,7 @@
     },
     methods:{
       back() {
-        this.$router.go(-1);
+        this.$router.push('/profile');
       }
     }
   }
