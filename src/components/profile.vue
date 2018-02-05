@@ -64,7 +64,7 @@
     },
     created(){
       // 这两行测试使用，调试当前页面
-      let folderName = 'default';
+      let folderName = '默认';
       this.$store.dispatch('getAllFolders', { folderName });
       console.log(this.folders);
       let folders = this.folders;

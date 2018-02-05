@@ -1,19 +1,28 @@
 import {getStore, setStore, removeStore} from '../config/utils'
 
 // 需要合并所有的存储，为一个，这样就不需要这么多的键值了
-export const STORAGE_KEY = 'tasks';
-export const SEARCH_HISTORY_KEY = 'tasks-search-history'
+export const STORAGE_KEY = 'vue2-dida';
+/*export const SEARCH_HISTORY_KEY = 'tasks-search-history'
 export const CONFIG_KEY = 'tasks-config'
-export const USER_KEY = 'tasks-user'
+export const USER_KEY = 'tasks-user'*/
 
-const defaultStorage = [
-  {name:'default', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
-  {name:'今天', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
+/*const defaultStorage = [
+  {name:'默认', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
+  {name:'收集箱', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
   ]
 const defaultConfig = {showCompleted:false}
-const defaultUser = {username:'',password:'',phone:''}
+const defaultUser = {username:'',password:'',phone:''}*/
 
-// 这些 state 是否也需要合并成一个？还是把整个 mutation 分开成多个
+const defaultStorage = {
+  folders:[
+    {name:'默认', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
+    {name:'收集箱', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]}
+  ],
+  searchHistory:[],
+  config:{showCompleted:false},
+  user:{username:'',password:'',phone:''}
+}
+
 export const state = {
   config:[],
   folders:[],
@@ -26,26 +35,26 @@ export const state = {
 export const actions = {
   getAllFolders ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
-    // setStore(USER_KEY, defaultUser);
-    let folders = getStore(STORAGE_KEY);
-    let config = getStore(CONFIG_KEY);
-    let user = getStore(USER_KEY);
-    if (!folders) {
+    let storage = getStore(STORAGE_KEY);
+   /* let config = getStore(CONFIG_KEY);
+    let user = getStore(USER_KEY);*/
+    if (!storage) {
       setStore(STORAGE_KEY, defaultStorage);
-      folders = getStore(STORAGE_KEY);
+      storage = getStore(STORAGE_KEY);
     }
-    if (!config) {
+    /*if (!config) {
       setStore(CONFIG_KEY, defaultConfig);
       config = getStore(CONFIG_KEY);
     }
     if (!user) {
       setStore(USER_KEY, defaultUser);
       user = getStore(USER_KEY);
-    }
-    commit('getAllFolders', { folders, config, user, folderName});
+    }*/
+    commit('getAllFolders', { storage, folderName});
   },
   getSearchHistory ({ commit }) {
-    var searchHistory = getStore(SEARCH_HISTORY_KEY);
+    let storage = getStore(STORAGE_KEY);
+    let searchHistory = storage.searchHistory;
     if(!searchHistory) {
       searchHistory = [];
     }
@@ -63,16 +72,15 @@ export const getters = {
           unCompletedTaskNum++
         }
       })
-      folderNames.push({name:folder.name,taskNum:(String)(unCompletedTaskNum)});
+      folderNames.push({name:folder.name,taskNum:String(unCompletedTaskNum)});
     });
     return folderNames;
   }
 }
 
 export const mutations = {
-  getAllFolders (state, { folders, config, user, folderName}) {
-    // let name = folderName || 'default';
-    state.folders = folders;
+  getAllFolders (state, { storage, folderName}) {
+    state.folders = storage.folders;
     let folder = state.folders.find(folder => folder.name == folderName);
     let tasks = folder.tasks;
     let stateTasks = [];
@@ -80,13 +88,13 @@ export const mutations = {
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, date:task.date, priority:task.priority, folderName:folder.name})
     })
     state.tasks = stateTasks;
-    state.config = config;
-    state.user = user;
+    state.config = storage.config;
+    state.user = storage.user;
   },
 
   getCurrentFolder(state, { folders }) {
     state.folders = folders;
-    let folder = state.folders.find(folder => folder.name === 'default'); // 刚登录显式默认文件夹的任务
+    let folder = state.folders.find(folder => folder.name === '默认'); // 刚登录显式默认文件夹的任务
     let tasks = folder.tasks;
     state.tasks = tasks;
   },
@@ -125,12 +133,16 @@ export const mutations = {
     })
     state.tasks = stateTasks;
     state.folders = folders;
-    setStore(STORAGE_KEY, folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   addFolder (state,  folder ) {
     state.folders.push({name:folder,tasks:[]});
-    setStore(STORAGE_KEY, state.folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   getSearchHistory(state, searchHistory) {
@@ -139,17 +151,25 @@ export const mutations = {
 
   addSearchHistory(state, search) {
     state.searchHistory.unshift(search);
-    setStore(SEARCH_HISTORY_KEY, state.searchHistory);
+    let storage = getStore(STORAGE_KEY);
+    storage.searchHistory = state.searchHistory;
+    setStore(STORAGE_KEY, storage);
   },
 
   deleteSearchHistory(state, index) {
-    state.searchHistory.splice(index, 1);
-    setStore(SEARCH_HISTORY_KEY, state.searchHistory);
+    let searchHistory = state.searchHistory;
+    searchHistory.splice(index, 1);
+    state.searchHistory = searchHistory;
+    let storage = getStore(STORAGE_KEY);
+    storage.searchHistory = state.searchHistory;
+    setStore(STORAGE_KEY, storage);
   },
 
   clearSearchHistory(state) {
     state.searchHistory = [];
-    setStore(SEARCH_HISTORY_KEY, state.searchHistory);
+    let storage = getStore(STORAGE_KEY);
+    storage.searchHistory = state.searchHistory;
+    setStore(STORAGE_KEY, storage);
   },
 
   toggleTask(state, item) {
@@ -167,7 +187,9 @@ export const mutations = {
       stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
     })
     state.tasks = stateTasks;
-    setStore(STORAGE_KEY, folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   deleteTask( state, { folderName, taskIndex } ) {
@@ -178,7 +200,9 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    setStore(STORAGE_KEY, state.folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   editTask (state, { folderName, taskIndex, title, content, done, date, priority }) {
@@ -193,7 +217,9 @@ export const mutations = {
       }
     });
     state.folders = folders;
-    setStore(STORAGE_KEY, state.folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   moveToFolder(state, {oldFolderName, oldTaskIndex, newFolderName}) {
@@ -211,7 +237,9 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    setStore(STORAGE_KEY, state.folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   toggleAll (state, { done }) {
@@ -230,25 +258,33 @@ export const mutations = {
 
   saveConfig(state, options) {
     state.config[options.name] = options.value;
-    setStore(CONFIG_KEY, state.config);
+    let storage = getStore(STORAGE_KEY);
+    storage.config = state.config;
+    setStore(STORAGE_KEY, storage);
   },
 
   login(state, {username, password}) {
     state.user.username = username;
     state.user.password = password;
-    setStore(USER_KEY,state.user);
+    let storage = getStore(STORAGE_KEY);
+    storage.user = state.user;
+    setStore(STORAGE_KEY, storage);
   },
 
   loginOut(state) {
     state.user = {};
-    setStore(USER_KEY, state.user);
+    let storage = getStore(STORAGE_KEY);
+    storage.user = state.user;
+    setStore(STORAGE_KEY, storage);
   },
 
   changeUsername(state, { username }) {
     let user = state.user;
     user.username = username;
     state.user = user;
-    setStore(USER_KEY, state.user);
+    let storage = getStore(STORAGE_KEY);
+    storage.user = state.user;
+    setStore(STORAGE_KEY, storage);
   },
 
   // 密码还是要加密
@@ -256,7 +292,9 @@ export const mutations = {
     let user = state.user;
     user.password = password;
     state.user = user;
-    setStore(USER_KEY, state.user);
+    let storage = getStore(STORAGE_KEY);
+    storage.user = state.user;
+    setStore(STORAGE_KEY, storage);
   },
 
   editFolder(state, { oldFolderName, newFolderName }) {
@@ -267,7 +305,9 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    setStore(STORAGE_KEY, state.folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   },
 
   deleteFolder( state, { folderIndex }) {
@@ -278,6 +318,8 @@ export const mutations = {
       }
     })
     state.folders = folders;
-    setStore(STORAGE_KEY, state.folders);
+    let storage = getStore(STORAGE_KEY);
+    storage.folders = state.folders;
+    setStore(STORAGE_KEY, storage);
   }
 }

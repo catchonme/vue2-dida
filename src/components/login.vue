@@ -46,7 +46,7 @@
     },
     // created 仅供测试，
     created(){
-      let folderName = 'default';
+      let folderName = '默认';
       this.$store.dispatch('getAllFolders', { folderName });
     },
     methods:{

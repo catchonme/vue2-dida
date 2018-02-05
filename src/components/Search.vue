@@ -17,21 +17,22 @@
       <h4 class="title-search-tasks">搜索历史</h4>
       <mu-list class="search-history-list">
         <mu-list-item v-for="(item, index) in searchHistory" :title="item" :key="index" @click="searchFromHistory(item)">
-          <mu-icon slot="right" value="clear" @click="deleteSearchHistory(index)"/>
+          <mu-icon slot="right" value="clear" @click.stop.prevent="deleteSearchHistory(index)"/>
         </mu-list-item>
       </mu-list>
       <mu-divider/>
       <div class="clear-history" @click="clearSearchHistory">清空搜索历史</div>
     </section>
+    <footer-guider bottom-nav="search"></footer-guider>
   </div>
 </template>
 
 <script>
   import task from './task'
   import { mapMutations } from 'vuex';
-
+  import footerGuider from './footerGuide'
   export default {
-    components: { task },
+    components: { task, footerGuider },
     data() {
       return {
         searchValue:'',
@@ -42,7 +43,7 @@
     },
     created() {
       this.$store.dispatch('getSearchHistory');
-      let folderName = 'default';
+      let folderName = '默认';
       this.$store.dispatch('getAllFolders',{folderName});
     },
     computed: {
@@ -51,11 +52,6 @@
       },
       folders() {
         return this.$store.state.folders;
-      }
-    },
-    watch:{
-      list:function(){
-        console.log(this.list)
       }
     },
     methods:{
@@ -91,24 +87,12 @@
           })
         })
         this.searchResults = results;
-        console.log(this.searchResults);
       },
       searchFromHistory(val) {
         this.searchValue = val;
         this.searchTask();
       },
-      /*deleteSearchHistory(index) {
-        // this.searchHistory.splice(index,1);
-        this.deleteSearchHistory(index);
-        let temp = getStore(SEARCH_HISTORY_KEY);
-        console.log(temp);
-      },
-      clearAllHistory() {
-        this.clearAllHistory();
-        removeStore(SEARCH_HISTORY_KEY);
-      }*/
     }
-
   }
 </script>
 

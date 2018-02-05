@@ -68,7 +68,7 @@
         </div>
         <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="showAddTask"/>
         <mu-dialog :open="dialogShow" @close="close">
-          <mu-text-field v-focus :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTaskFunc"/>
+          <mu-text-field :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTaskFunc"/>
           <div class="icon-container">
             <div class="icon-left" v-if="addType == 'task'">
               <mu-icon value="today" @click="chooseDate"/>
@@ -150,15 +150,8 @@ export default {
       priorityColor:''
     }
   },
-  directives:{
-    focus:{
-      inserted:function(el){
-        el.focus();
-      }
-    }
-  },
   mounted(){
-    let folderName = this.$route.query.folderName || 'default';
+    let folderName = this.$route.query.folderName || '默认';
     this.$store.dispatch('getAllFolders', {folderName});
   },
   computed: {
@@ -252,15 +245,20 @@ export default {
     },
     chooseSortItem(val) {
       var sort = val.value;
+      if (sort == 'priority' || sort == 'date') {
+        var order = -1;
+      } else {
+        var order = 1;
+      }
       this.filteredTasks = this.filteredTasks.sort(function(a,b){
         a = a[sort];
         b = b[sort];
-        return (a === b ? 0 : a > b ? 1 : -1);
+        return (a === b ? 0 : a > b ? 1 : -1) * order;
       });
       this.completedTasks = this.completedTasks.sort(function(a,b){
         a = a[sort];
         b = b[sort];
-        return (a === b ? 0 : a > b ? 1 : -1);
+        return (a === b ? 0 : a > b ? 1 : -1) * order;
       })
       this.showSortSheet = false;
     },
@@ -295,30 +293,6 @@ export default {
     },
     openChoosePriority(bool) {
       bool ? this.showChoosePriority = true : this.showChoosePriority = false;
-      if (bool) {
-        let priority = this.priority;
-        let priorityRadio = document.querySelectorAll('.priority-radio input');
-        console.log(priorityRadio);return;
-      }
-
-      /*switch (priority) {
-        case 0 :
-          {
-            priorityRadio[0].checked = true;
-          }break;
-        case 1:
-          {
-            priorityRadio[1].checked = true;
-          }break;
-        case 2:
-          {
-            priorityRadio[2].checked = true;
-          }break;
-        case 3:
-          {
-            priorityRadio[3].checked = true;
-          }break;
-      }*/
     },
     chooseFolder(folderName) {
       this.folderName = folderName;
@@ -331,7 +305,7 @@ export default {
         return;
       }
       if (this.addType == 'task') {
-        let folderName = this.folderName || 'default';
+        let folderName = this.folderName || '默认';
         let fullDate = this.taskDate + ' ' + this.taskTime
         if (fullDate) {
           var date = Date.parse(fullDate);
@@ -342,7 +316,6 @@ export default {
         this.addTask({folderName:folderName, title:text, date:date,priority:priority});
         this.taskDate = '';
         this.taskTime = '';
-        // this.$store.commit('addTask', {folderName:folderName,title:text})
       } else if (this.addType == 'folder') {
         this.$store.commit('addFolder', text )
       }

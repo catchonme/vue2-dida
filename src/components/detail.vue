@@ -393,7 +393,6 @@
     left:1.3rem;
     top:-.4rem;
     width:4.2rem;
-    /*border:1px solid orange;*/
     overflow: hidden;
   }
   .time {
@@ -401,6 +400,7 @@
     left:5rem;
     top:-.4rem;
     width:3rem;
+    margin-left:.5rem;
     overflow: hidden;
   }
   .priority {
