@@ -1,17 +1,6 @@
 import {getStore, setStore, removeStore} from '../config/utils'
 
-// 需要合并所有的存储，为一个，这样就不需要这么多的键值了
 export const STORAGE_KEY = 'vue2-dida';
-/*export const SEARCH_HISTORY_KEY = 'tasks-search-history'
-export const CONFIG_KEY = 'tasks-config'
-export const USER_KEY = 'tasks-user'*/
-
-/*const defaultStorage = [
-  {name:'默认', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
-  {name:'收集箱', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
-  ]
-const defaultConfig = {showCompleted:false}
-const defaultUser = {username:'',password:'',phone:''}*/
 
 const defaultStorage = {
   folders:[

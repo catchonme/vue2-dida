@@ -60,7 +60,7 @@
         this.showLoginTip = false;
       },
       back(){
-        this.$router.go(-1);
+        this.$router.push('./tasks');
       },
       userLogin() {
         if (!this.username) {
@@ -82,7 +82,7 @@
           } else {
             if (this.user.password != this.password) {
               this.showLoginTip = true;
-              this.tip = '密码错误';
+              this.tips = '密码错误';
               return;
             } else {
               this.$router.push('./tasks');

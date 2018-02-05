@@ -52,11 +52,14 @@
         'user'
       ]),
       username:function(){
-        return  this.user.username;
+        return this.user.username;
       }
     },
     created() {
-      // this.username = this.user.username;
+      let user = this.user;
+      if (!user.username) {
+        this.$router.push('/login');
+      }
     },
     methods:{
       ...mapMutations([
