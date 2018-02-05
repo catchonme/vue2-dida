@@ -67,7 +67,7 @@
           </div>
         </div>
         <mu-float-button v-show="addButtonShow" icon="add" secondary class="float-add-button" @click="showAddTask"/>
-        <mu-dialog :open="dialogShow" @close="close">
+        <mu-dialog :open="dialogShow" @close="closeAddDialog">
           <mu-text-field :hintText="hintText" v-model="inputText" :underlineShow="true" @keyup.enter="addTaskFunc"/>
           <div class="icon-container">
             <div class="icon-left" v-if="addType == 'task'">
@@ -181,7 +181,9 @@ export default {
   methods: {
     ...mapMutations([
       'saveConfig',
-      'addTask'
+      'addTask',
+      'addFolder',
+      'switchFolder'
     ]),
     choosePriority(num) {
       let priorityRadio = document.querySelectorAll('.priority-radio input');
@@ -245,6 +247,7 @@ export default {
     },
     chooseSortItem(val) {
       var sort = val.value;
+      // 优先级和时间，越大的排的越前
       if (sort == 'priority' || sort == 'date') {
         var order = -1;
       } else {
@@ -287,7 +290,7 @@ export default {
     open () {
       this.dialogShow = true
     },
-    close () {
+    closeAddDialog () {
       this.addButtonShow = true;
       this.dialogShow = false
     },
@@ -297,7 +300,7 @@ export default {
     chooseFolder(folderName) {
       this.folderName = folderName;
       this.$route.query.folderName = folderName;
-      this.$store.commit('switchFolder', { folderName })
+      this.switchFolder({folderName});
     },
     addTaskFunc() {
       let text = this.inputText.replace(/^\s+|\s+$/, " ");
@@ -317,7 +320,7 @@ export default {
         this.taskDate = '';
         this.taskTime = '';
       } else if (this.addType == 'folder') {
-        this.$store.commit('addFolder', text )
+        this.addFolder(text);
       }
       this.inputText = '';
       this.addButtonShow = true;

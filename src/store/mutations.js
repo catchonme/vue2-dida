@@ -36,20 +36,10 @@ export const actions = {
   getAllFolders ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
     let storage = getStore(STORAGE_KEY);
-   /* let config = getStore(CONFIG_KEY);
-    let user = getStore(USER_KEY);*/
     if (!storage) {
       setStore(STORAGE_KEY, defaultStorage);
       storage = getStore(STORAGE_KEY);
     }
-    /*if (!config) {
-      setStore(CONFIG_KEY, defaultConfig);
-      config = getStore(CONFIG_KEY);
-    }
-    if (!user) {
-      setStore(USER_KEY, defaultUser);
-      user = getStore(USER_KEY);
-    }*/
     commit('getAllFolders', { storage, folderName});
   },
   getSearchHistory ({ commit }) {
@@ -138,7 +128,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
-  addFolder (state,  folder ) {
+  addFolder (state, folder ) {
     state.folders.push({name:folder,tasks:[]});
     let storage = getStore(STORAGE_KEY);
     storage.folders = state.folders;
