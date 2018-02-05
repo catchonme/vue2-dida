@@ -6,7 +6,6 @@ export const SEARCH_HISTORY_KEY = 'tasks-search-history'
 export const CONFIG_KEY = 'tasks-config'
 export const USER_KEY = 'tasks-user'
 
-// 增加日期后，可能还需要增加日期是否过期的键值，这样才好判断，哪些已经过期了，还是直接根据时间对比？
 const defaultStorage = [
   {name:'default', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
   {name:'今天', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
@@ -78,7 +77,7 @@ export const mutations = {
     let tasks = folder.tasks;
     let stateTasks = [];
     tasks.forEach(function(task, index){
-      stateTasks.push({taskIndex:index, title:task.title, done:task.done, folderName:folder.name})
+      stateTasks.push({taskIndex:index, title:task.title, done:task.done, date:task.date, priority:task.priority, folderName:folder.name})
     })
     state.tasks = stateTasks;
     state.config = config;

@@ -37,8 +37,8 @@
     <form class="detail-form">
       <div class="form-top">
         <mu-checkbox class="checkbox" v-model="detailChecked"/>
-        <mu-date-picker :hintText="detailDate" class="date" v-model="detailDate" :underlineShow="false"/>
-        <mu-time-picker :hintText="detailTime" format="24hr" v-model="detailTime" class="time" :underlineShow="false"/>
+        <mu-date-picker :hintText="hintDate" class="date" v-model="detailDate" :underlineShow="false"/>
+        <mu-time-picker :hintText="hintTime" format="24hr" v-model="detailTime" class="time" :underlineShow="false"/>
         <div class="priority">
           <mu-icon v-show="priority > 0" v-for="(item, index) in priority" :key="index+4" class="choose-priority" value="priority_high" :color="priorityColor" @click="openChoosePriority(true)"/>
           <mu-icon v-show="priority == 0" v-for="(item, index) in [1,2,3]" :key="index" class="priority-high" value="priority_high" color="gray" @click="openChoosePriority(true)"/>
@@ -93,8 +93,10 @@
         detailTitle:'',
         detailContent:'',
         detailChecked:true,
-        detailDate:'设置日期',
-        detailTime:'设置时间',
+        hintDate:'设置日期',
+        hintTime:'设置时间',
+        detailDate:'',
+        detailTime:'',
         input:'',
         bottomSheet:false,
         showConfirmDelete:false,
@@ -134,7 +136,9 @@
         }).join('-');
         let time = timeArr[0]+':'+timeArr[1];
         this.detailDate = date;
+        this.hintDate = date;
         this.detailTime = time;
+        this.hintTime = time;
       }
       console.log(this.detail);
     },

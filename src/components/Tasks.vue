@@ -39,16 +39,14 @@
           <mu-icon-button icon="more_horiz" @click="openBottomSheet" slot="right"/>
           <mu-bottom-sheet :open="bottomSheet" @close="closeBottomSheet">
             <mu-list @itemClick="chooseItem">
-              <mu-list-item title="显示详情" value="showDetail"/>
               <mu-list-item :title="showCompleted ? '隐藏已完成' : '显式已完成'" value="showCompleted"/>
               <mu-list-item title="排序" value="showSort"/>
-              <mu-list-item title="编辑多个任务" value="editMultiTasks"/>
             </mu-list>
           </mu-bottom-sheet>
           <mu-bottom-sheet :open="showSortSheet" @close="closeSortSheet">
             <mu-list @itemClick="chooseSortItem">
-              <mu-list-item title="按时间" value="time"/>
               <mu-list-item title="按标题" value="title"/>
+              <mu-list-item title="按时间" value="date"/>
               <mu-list-item title="按优先级" value="priority"/>
             </mu-list>
           </mu-bottom-sheet>
@@ -174,13 +172,17 @@ export default {
       tasks: state => state.tasks,
       username: state => state.user.username
     }),
-    filteredTasks () {
-      console.log('task folders');
-      console.log(this.folders);
-      return this.tasks.filter(task => !task.done)
+    filteredTasks : {
+      get:function(){
+        return this.tasks.filter(task => !task.done)
+      },
+      set:function(){}
     },
-    completedTasks() {
-      return this.tasks.filter(task => task.done)
+    completedTasks: {
+      get:function () {
+        return this.tasks.filter(task => task.done)
+      },
+      set:function(){}
     }
   },
   methods: {
@@ -216,7 +218,6 @@ export default {
                 this.priorityColor = 'gray';
               }break;
       }
-      console.log(this.priority);
     },
     chooseDate() {
       document.querySelector(".date input").click();
@@ -251,7 +252,16 @@ export default {
     },
     chooseSortItem(val) {
       var sort = val.value;
-      console.log(sort);
+      this.filteredTasks = this.filteredTasks.sort(function(a,b){
+        a = a[sort];
+        b = b[sort];
+        return (a === b ? 0 : a > b ? 1 : -1);
+      });
+      this.completedTasks = this.completedTasks.sort(function(a,b){
+        a = a[sort];
+        b = b[sort];
+        return (a === b ? 0 : a > b ? 1 : -1);
+      })
       this.showSortSheet = false;
     },
     closeSortSheet() {
