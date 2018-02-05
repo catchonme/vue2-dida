@@ -5,7 +5,7 @@
              type="checkbox"
              :checked="task.done"
              @change="toggleTask(task)">
-      <label v-text="task.title" @click="detail(task)"></label>
+      <label @click="detail(task)">{{ task.title | ellipsis}}</label>
     </div>
   </li>
 </template>
@@ -23,7 +23,12 @@
         let origin = this.$router.history.current.name;
         this.$router.push({name:'detail', query:{folderName:task.folderName,taskIndex:task.taskIndex,origin:origin}})
       }
-    }
+    },
+    filters: {
+      ellipsis: function (n) {
+        return n.length < 10 ? n : n.substring(0,10)+'...'
+      }
+    },
   }
 </script>
 

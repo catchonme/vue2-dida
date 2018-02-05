@@ -193,7 +193,6 @@
             this.priorityColor = 'gray';
           }break;
         }
-        console.log(this.priority);
       },
       closeBottomSheet () {
         this.bottomSheet = false

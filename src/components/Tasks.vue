@@ -23,7 +23,7 @@
                 </div>
               </div>
               <div class="left-main">
-                <mu-list-item v-for="(folder, index) in folderNames" :title="folder.name" :key="index" @click="chooseFolder(folder.name)">
+                <mu-list-item v-for="(folder, index) in folderNames" :title="folder.name | ellipsis" :key="index" @click="chooseFolder(folder.name)">
                   <mu-icon slot="left" value="inbox"/>
                   <mu-badge :content="folder.taskNum" slot="after"/>
                 </mu-list-item>
@@ -176,6 +176,11 @@ export default {
         return this.tasks.filter(task => task.done)
       },
       set:function(){}
+    }
+  },
+  filters:{
+    ellipsis:function (n) {
+      return n.length < 8 ? n : n.substring(0,8)+'...';
     }
   },
   methods: {
