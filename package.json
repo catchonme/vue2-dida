@@ -1,7 +1,7 @@
 {
-  "name": "offical-vue-cli-demo",
+  "name": "vue2-dida",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "任务管理工具",
   "author": "catchme <izengdp@163.com>",
   "private": true,
   "scripts": {

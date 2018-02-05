@@ -72,7 +72,6 @@
         }
         let search = this.searchValue;
         let results = []
-        console.log(this.folders);
         this.folders.forEach(function(folder){
           folder.tasks.forEach(function(task, index){
             if (task.title.indexOf(search) > -1) {

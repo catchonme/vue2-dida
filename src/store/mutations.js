@@ -1,7 +1,7 @@
 import {getStore, setStore, removeStore} from '../config/utils'
 
 export const STORAGE_KEY = 'vue2-dida';
-
+// 默认存储数据
 const defaultStorage = {
   folders:[
     {name:'默认', tasks : [{title:'开始你的任务',content:'',done:false,priority:0,date:''}]},
@@ -13,14 +13,14 @@ const defaultStorage = {
 }
 
 export const state = {
-  config:[],
   folders:[],
-  tasks:[],
   searchHistory:[],
-  detail:{},
-  user:{}
+  config:[],
+  user:{},
+  tasks:[],
+  detail:{}
 }
-
+// 初始化数据
 export const actions = {
   initData ({commit},{folderName}) {
     // removeStore(STORAGE_KEY);
@@ -32,7 +32,7 @@ export const actions = {
     commit('initData', { storage, folderName});
   }
 }
-
+// 获取所有的清单名称和清单下的任务数，在左侧栏显示
 export const getters = {
   folderNames:function(){
     let folderNames = [];
@@ -50,6 +50,7 @@ export const getters = {
 }
 
 export const mutations = {
+  // 初始化数据
   initData (state, { storage, folderName}) {
     state.folders = storage.folders;
     let folder = state.folders.find(folder => folder.name == folderName);
@@ -64,13 +65,7 @@ export const mutations = {
     state.searchHistory = storage.searchHistory;
   },
 
-  getCurrentFolder(state, { folders }) {
-    state.folders = folders;
-    let folder = state.folders.find(folder => folder.name === '默认'); // 刚登录显式默认文件夹的任务
-    let tasks = folder.tasks;
-    state.tasks = tasks;
-  },
-
+  // 获取该任务的详情
   getTaskDetail(state, {folderName, taskIndex}) {
     let folders = state.folders;
     let detail = {};
@@ -84,6 +79,7 @@ export const mutations = {
     state.detail = detail;
   },
 
+  // 主页面左侧栏点击文件夹切换
   switchFolder (state, { folderName }) {
     let folder = state.folders.find(folder => folder.name === folderName);
     let tasks = folder.tasks;
@@ -94,6 +90,7 @@ export const mutations = {
     state.tasks = stateTasks;
   },
 
+  // 添加任务
   addTask (state, {folderName, title, date, priority}) {
     let folders = state.folders;
     let folder = folders.find(folder => folder.name == folderName);
@@ -109,6 +106,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 添加清单
   addFolder (state, folder ) {
     state.folders.push({name:folder,tasks:[]});
     let storage = getStore(STORAGE_KEY);
@@ -116,10 +114,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
-  getSearchHistory(state, searchHistory) {
-    state.searchHistory = searchHistory;
-  },
-
+  // 存储搜索记录
   addSearchHistory(state, search) {
     state.searchHistory.unshift(search);
     let storage = getStore(STORAGE_KEY);
@@ -127,6 +122,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 删除搜索记录
   deleteSearchHistory(state, index) {
     let searchHistory = state.searchHistory;
     searchHistory.splice(index, 1);
@@ -136,6 +132,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 清除所有的搜索搜索记录
   clearSearchHistory(state) {
     state.searchHistory = [];
     let storage = getStore(STORAGE_KEY);
@@ -143,6 +140,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 点击是否完成当前任务
   toggleTask(state, item) {
     let folders = state.folders;
     folders.forEach(function(folder){
@@ -163,6 +161,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 删除当前任务
   deleteTask( state, { folderName, taskIndex } ) {
     let folders = state.folders;
     folders.forEach(function(folder){
@@ -176,6 +175,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 在详情内编辑当前任务
   editTask (state, { folderName, taskIndex, title, content, done, date, priority }) {
     let folders = state.folders;
     folders.forEach(function(folder) {
@@ -193,6 +193,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 详情内，移动当前任务到其它清单
   moveToFolder(state, {oldFolderName, oldTaskIndex, newFolderName}) {
     let folders = state.folders;
     let task = {};
@@ -213,20 +214,12 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
-  toggleAll (state, { done }) {
-    state.tasks.forEach((task) => {
-      task.done = done;
-    })
-  },
-
-  clearCompleted ( state ) {
-    state.tasks = state.tasks.filter(task => !task.done)
-  },
-
+  // 清除所有的任务
   clearAllTasks (state) {
     window.localStorage.removeItem(STORAGE_KEY);
   },
 
+  // 存储配置
   saveConfig(state, options) {
     state.config[options.name] = options.value;
     let storage = getStore(STORAGE_KEY);
@@ -234,6 +227,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 登录
   login(state, {username, password}) {
     state.user.username = username;
     state.user.password = password;
@@ -242,6 +236,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 退出登录
   loginOut(state) {
     state.user = {};
     let storage = getStore(STORAGE_KEY);
@@ -249,6 +244,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 修改用户名
   changeUsername(state, { username }) {
     let user = state.user;
     user.username = username;
@@ -258,7 +254,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
-  // 密码还是要加密
+  // 修改登录密码
   changePassword(state, { password }) {
     let user = state.user;
     user.password = password;
@@ -268,6 +264,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 编辑清单
   editFolder(state, { oldFolderName, newFolderName }) {
     let folders = state.folders;
     folders.forEach(function(folder) {
@@ -281,6 +278,7 @@ export const mutations = {
     setStore(STORAGE_KEY, storage);
   },
 
+  // 删除清单
   deleteFolder( state, { folderIndex }) {
     let folders = state.folders;
     folders.forEach(function(folder, index) {
