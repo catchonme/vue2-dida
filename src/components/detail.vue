@@ -122,7 +122,6 @@
         case 2 : this.priorityColor = 'orange'; break;
         case 3 : this.priorityColor = 'red'; break;
       }
-      console.log(this.priority);
       let datetime = this.$store.state.detail.date;
       if (datetime) {
         let dateArr = new Date(datetime).toLocaleDateString().split('/');
@@ -140,7 +139,6 @@
         this.detailTime = time;
         this.hintTime = time;
       }
-      console.log(this.detail);
     },
     computed:mapState({
       folders:state => state.folders,
@@ -256,7 +254,20 @@
         let taskIndex = this.$route.query.taskIndex;
         let done = this.detailChecked;
         let priority = this.priority;
-        let fullDate = this.detailDate + ' ' + this.detailTime
+
+        let detailDate = this.detailDate;
+        let detailTime = this.detailTime;
+        if(!detailDate && detailTime) {
+          let dateArr = new Date().toLocaleDateString().split('/');
+          detailDate = dateArr.map(function(val) {
+            if (val < 10) {
+              return '0' + val;
+            } else {
+              return val;
+            }
+          }).join('-');
+        }
+        let fullDate = detailDate + ' ' + detailTime
         if (fullDate) {
           var date = Date.parse(fullDate);
         } else {
@@ -266,7 +277,7 @@
         let origin = this.$route.query.origin;
         if (origin == 'tasks') {
           this.$router.push({name:'tasks',query:{folderName:folderName}});
-        } else if (origin = 'search') {
+        } else {
           this.$router.go(-1);
         }
       }
@@ -369,8 +380,7 @@
   .priority-radio {
     float: left;
     position: relative;
-    top:-0.22rem;
-    /*<!--left:-3rem;-->*/
+    top:-0.35rem;
   }
   .priority-icon {
     margin:0 -0.8rem 0 0;

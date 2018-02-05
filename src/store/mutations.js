@@ -101,7 +101,6 @@ export const mutations = {
     state.tasks = stateTasks;
   },
 
-  // name 是文件夹的名称
   addTask (state, {folderName, title, date, priority}) {
     let folders = state.folders;
     let folder = folders.find(folder => folder.name == folderName);

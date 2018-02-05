@@ -309,14 +309,27 @@ export default {
       }
       if (this.addType == 'task') {
         let folderName = this.folderName || '默认';
-        let fullDate = this.taskDate + ' ' + this.taskTime
+        let taskDate = this.taskDate;
+        let taskTime = this.taskTime;
+        if(!taskDate && taskTime) {
+          let dateArr = new Date().toLocaleDateString().split('/');
+          taskDate = dateArr.map(function(val) {
+            if (val < 10) {
+              return '0' + val;
+            } else {
+              return val;
+            }
+          }).join('-');
+        }
+        let fullDate = taskDate + ' ' + taskTime
         if (fullDate) {
           var date = Date.parse(fullDate);
         } else {
           var date = '';
         }
         let priority = this.priority;
-        this.addTask({folderName:folderName, title:text, date:date,priority:priority});
+        let title = text;
+        this.addTask({folderName, title, date, priority});
         this.taskDate = '';
         this.taskTime = '';
       } else if (this.addType == 'folder') {
